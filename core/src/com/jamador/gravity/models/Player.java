@@ -1,50 +1,15 @@
 package com.jamador.gravity.models;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * Created by jason on 3/19/17.
  */
-public class Player {
-    private Sprite sprite;
-    private Body body;
-    private SpriteBatch batch;
-    private Vector2 netForce;
+public class Player extends GravityObject{
 
-    public Player(World world, SpriteBatch batch) {
-        this.batch = batch;
-
-        /*
-        box2d definitions
-         */
-        BodyDef bd = new BodyDef();
-        bd.type = BodyDef.BodyType.DynamicBody;
-        bd.position.set(300, 300);
-        body = world.createBody(bd);
-
-        FixtureDef fd = new FixtureDef();
-        fd.shape = new CircleShape();
-        fd.shape.setRadius(64f);
-        fd.density = 0.00005f;
-        fd.friction = 0.5f;
-        body.createFixture(fd);
-
-        sprite = new Sprite(new Texture(Gdx.files.internal("ball.png")));
-        netForce = new Vector2();
-    }
-
-    public void render() {
-        sprite.setCenter(body.getPosition().x, body.getPosition().y);
-        sprite.draw(batch);
-        body.applyForceToCenter(netForce, true);
-    }
-
-    public void addForce(Vector2 f) {
-        netForce.add(f);
+    public Player(World world, SpriteBatch batch, Vector2 position, float mass) {
+        super(world, batch, position, mass);
     }
 }

@@ -49,6 +49,8 @@ public class GravityObject {
 
         sprite = new Sprite(new Texture(Gdx.files.internal("ball.png")));
         sprite.setSize(radius * 2, radius * 2);
+        sprite.setColor(0, 0.7f, 0.2f, 1.0f);
+
         netForce = new Vector2();
         singleForce = new Vector2();
     }

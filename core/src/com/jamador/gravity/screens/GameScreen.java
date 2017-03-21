@@ -5,6 +5,8 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -14,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.jamador.gravity.GravityGame;
 import com.jamador.gravity.models.GravityObject;
+import com.jamador.gravity.models.Player;
 import com.siondream.core.physics.MapBodyManager;
 
 import java.util.Random;
@@ -30,6 +33,8 @@ public class GameScreen implements Screen, InputProcessor {
     private OrthographicCamera camera;
     private Box2DDebugRenderer debugRenderer;
     private Array<GravityObject> gravityObjects;
+    private Array<Sprite> stars;
+    private Player player;
 
     private Vector3 mousePosition;
     private boolean touchDown;
@@ -95,6 +100,8 @@ public class GameScreen implements Screen, InputProcessor {
         /*
         game objects
          */
+        player = new Player(world, batch, new Vector2(80, 50), 35f);
+
         Random r = new Random();
         gravityObjects = new Array<GravityObject>();
         /*
@@ -105,6 +112,24 @@ public class GameScreen implements Screen, InputProcessor {
             gravityObjects.add(new GravityObject(world, batch, new Vector2(r.nextFloat() * 160,
                     r.nextFloat() * 100), r.nextFloat() * 50 + 1));
         }
+        gravityObjects.add(player);
+
+        /*
+        background
+         */
+        Sprite star = new Sprite(new Texture(Gdx.files.internal("ball.png")));
+        star.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        stars = new Array<Sprite>();
+        float size, x, y;
+        for (int i=0; i < 400; i++) {
+            size = r.nextFloat() * 1;
+            x = r.nextFloat() * 480 - 160;
+            y = r.nextFloat() * 300 - 100;
+            star.setPosition(x, y);
+            star.setSize(size, size);
+            stars.add(new Sprite(star));
+        }
+
     }
 
     /*
@@ -116,7 +141,6 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-        System.out.println(gravityObjects.size);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         for (GravityObject o : gravityObjects) {
             if (!o.active) {
@@ -131,12 +155,18 @@ public class GameScreen implements Screen, InputProcessor {
                 gravityObjects.get(i).applyGravity(gravityObjects.get(j).getPosition().x, gravityObjects.get(j).getPosition().y, gravityObjects.get(j).getMass());
                 gravityObjects.get(j).applyGravity(gravityObjects.get(i).getPosition().x, gravityObjects.get(i).getPosition().y, gravityObjects.get(i).getMass());
             }
+        camera.position.set(player.getPosition(), 0);
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        for (Sprite s : stars) {
+            s.draw(batch);
+        }
         for (GravityObject o : gravityObjects) {
             o.render();
         }
         batch.end();
-        debugRenderer.render(world, camera.combined);
+        //debugRenderer.render(world, camera.combined);
         world.step(1/60f, 6, 2);
     }
 
