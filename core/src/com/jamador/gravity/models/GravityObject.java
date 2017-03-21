@@ -20,8 +20,8 @@ public class GravityObject {
     private float mass;
     private float newMass;
     private float g = 25;
-    private float growRate = 0.1f;
-
+    private float growRate;
+    private float growTime = 0.5f;
     public boolean growing = false;
     public boolean shrinking = false;
     public boolean active = true;
@@ -67,7 +67,7 @@ public class GravityObject {
                 growing = false;
         }
         if(shrinking) {
-            if (radius > growRate)
+            if (radius > 0.1)
                 shrink();
             else {
                 active = false;
@@ -98,11 +98,14 @@ public class GravityObject {
         growing = true;
         shrinking = false;
         newMass = m;
+        float newRadius = (float) Math.sqrt(newMass / Math.PI);
+        growRate = (newRadius - radius) / (60 * growTime);
     }
 
     public void startShrink() {
         shrinking = true;
         growing = false;
+        growRate = radius / (60 * growTime);
     }
 
     private void grow() {
@@ -124,6 +127,6 @@ public class GravityObject {
         radius -= growRate;
         fixture.getShape().setRadius(radius);
         body.resetMassData();
-        sprite.setSize(radius*2, radius*2);
+        sprite.setSize(radius * 2, radius * 2);
     }
 }

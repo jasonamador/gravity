@@ -6,12 +6,15 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.jamador.gravity.GravityGame;
 import com.jamador.gravity.models.GravityObject;
+import com.siondream.core.physics.MapBodyManager;
 
 import java.util.Random;
 
@@ -25,6 +28,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     private World world;
     private OrthographicCamera camera;
+    private Box2DDebugRenderer debugRenderer;
     private Array<GravityObject> gravityObjects;
 
     private Vector3 mousePosition;
@@ -67,7 +71,6 @@ public class GameScreen implements Screen, InputProcessor {
                     b.startGrow(a.getMass() + b.getMass());
                     a.startShrink();
                 }
-
             }
 
             @Override
@@ -80,6 +83,14 @@ public class GameScreen implements Screen, InputProcessor {
             @Override
             public void postSolve(Contact contact, ContactImpulse impulse) {}
         });
+        debugRenderer = new Box2DDebugRenderer();
+
+        /*
+        level loader
+         */
+        TiledMap map = new TmxMapLoader().load("test.tmx");
+        MapBodyManager mapBodyManager = new MapBodyManager(world, 160 / 800, Gdx.files.internal("materials.json"), 0);
+        //mapBodyManager.createPhysics(map, "physics");
 
         /*
         game objects
@@ -90,7 +101,7 @@ public class GameScreen implements Screen, InputProcessor {
         gravityObjects.add(new GravityObject(world, batch, new Vector2(70, 50), 50));
         gravityObjects.add(new GravityObject(world, batch, new Vector2(90, 50), 30));
         */
-        for (int x=0; x<250; x++) {
+        for (int x=0; x<15; x++) {
             gravityObjects.add(new GravityObject(world, batch, new Vector2(r.nextFloat() * 160,
                     r.nextFloat() * 100), r.nextFloat() * 50 + 1));
         }
@@ -105,6 +116,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
+        System.out.println(gravityObjects.size);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         for (GravityObject o : gravityObjects) {
             if (!o.active) {
@@ -117,13 +129,14 @@ public class GameScreen implements Screen, InputProcessor {
         for (int i = 0; i < gravityObjects.size; i++)
             for (int j = i; j < gravityObjects.size; j++) {
                 gravityObjects.get(i).applyGravity(gravityObjects.get(j).getPosition().x, gravityObjects.get(j).getPosition().y, gravityObjects.get(j).getMass());
-                gravityObjects.get(j).applyGravity(gravityObjects.get(i).getPosition().x, gravityObjects.get(i).getPosition().y, gravityObjects.get(j).getMass());
+                gravityObjects.get(j).applyGravity(gravityObjects.get(i).getPosition().x, gravityObjects.get(i).getPosition().y, gravityObjects.get(i).getMass());
             }
         batch.begin();
         for (GravityObject o : gravityObjects) {
             o.render();
         }
         batch.end();
+        debugRenderer.render(world, camera.combined);
         world.step(1/60f, 6, 2);
     }
 
