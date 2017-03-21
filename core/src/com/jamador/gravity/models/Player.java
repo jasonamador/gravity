@@ -14,7 +14,7 @@ public class Player {
     private Sprite sprite;
     private Body body;
     private SpriteBatch batch;
-    private Vector2 force;
+    private Vector2 netForce;
 
     public Player(World world, SpriteBatch batch) {
         this.batch = batch;
@@ -35,23 +35,16 @@ public class Player {
         body.createFixture(fd);
 
         sprite = new Sprite(new Texture(Gdx.files.internal("ball.png")));
-        force = new Vector2();
+        netForce = new Vector2();
     }
 
     public void render() {
         sprite.setCenter(body.getPosition().x, body.getPosition().y);
         sprite.draw(batch);
-        body.applyForceToCenter(force, true);
+        body.applyForceToCenter(netForce, true);
     }
 
-    public void zeroForce() {
-        force.set(0f, 0f);
-    }
-
-    public void applyForce(Vector2 p) {
-        force.set(body.getPosition().x, body.getPosition().y);
-        force.sub(p);
-        force.setAngle(force.angle() + 180);
-        force.setLength2(1000);
+    public void addForce(Vector2 f) {
+        netForce.add(f);
     }
 }
