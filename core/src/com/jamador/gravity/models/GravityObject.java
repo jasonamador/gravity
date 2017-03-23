@@ -49,13 +49,14 @@ public class GravityObject {
 
         sprite = new Sprite(new Texture(Gdx.files.internal("ball.png")));
         sprite.setSize(radius * 2, radius * 2);
-        sprite.setColor(0, 0.7f, 0.2f, 1.0f);
+        sprite.setOriginCenter();
 
         netForce = new Vector2();
         singleForce = new Vector2();
     }
 
     public void render() {
+        sprite.setRotation(body.getAngle() * 57.3f);
         sprite.setCenter(body.getPosition().x, body.getPosition().y);
         sprite.draw(batch);
     }
@@ -119,6 +120,7 @@ public class GravityObject {
         fixture.getShape().setRadius(radius);
         body.resetMassData();
         sprite.setSize(radius*2, radius*2);
+        sprite.setOriginCenter();
     }
 
     private void shrink() {
@@ -129,6 +131,7 @@ public class GravityObject {
         radius -= growRate;
         fixture.getShape().setRadius(radius);
         body.resetMassData();
-        sprite.setSize(radius * 2, radius * 2);
+        sprite.setSize(radius *2, radius * 2);
+        sprite.setOriginCenter();
     }
 }
