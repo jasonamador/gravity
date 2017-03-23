@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.jamador.gravity.GravityGame;
 import com.jamador.gravity.models.GameWorld;
+import com.jamador.gravity.renderers.GameRenderer;
 
 /**
  * Created by jason on 3/19/17.
@@ -12,11 +13,13 @@ import com.jamador.gravity.models.GameWorld;
 public class GameScreen implements Screen, InputProcessor {
     private GravityGame game;
     private GameWorld gameWorld;
+    private GameRenderer gameRenderer;
 
 
     public GameScreen(GravityGame game) {
         this.game = game;
         gameWorld = new GameWorld();
+        gameRenderer = new GameRenderer(gameWorld);
         Gdx.input.setInputProcessor(this);
     }
 
@@ -30,7 +33,7 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void render(float delta) {
         gameWorld.update();
-        gameWorld.render();
+        gameRenderer.render();
     }
 
     @Override
@@ -78,27 +81,27 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        gameWorld.getCamera().unproject(gameWorld.mousePosition.set(screenX, screenY, 0));
+        gameRenderer.getCamera().unproject(gameWorld.mousePosition.set(screenX, screenY, 0));
         gameWorld.touchDown = true;
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        gameWorld.getCamera().unproject(gameWorld.mousePosition.set(screenX, screenY, 0));
+        gameRenderer.getCamera().unproject(gameWorld.mousePosition.set(screenX, screenY, 0));
         gameWorld.touchDown = false;
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        gameWorld.getCamera().unproject(gameWorld.mousePosition.set(screenX, screenY, 0));
+        gameRenderer.getCamera().unproject(gameWorld.mousePosition.set(screenX, screenY, 0));
         return false;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        gameWorld.getCamera().unproject(gameWorld.mousePosition.set(screenX, screenY, 0));
+        gameRenderer.getCamera().unproject(gameWorld.mousePosition.set(screenX, screenY, 0));
         return false;
     }
 

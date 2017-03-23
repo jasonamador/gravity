@@ -1,8 +1,6 @@
 package com.jamador.gravity.models;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -28,29 +26,12 @@ public class GameWorld {
     private SpriteBatch batch;
 
     /*
-    renderer
-     */
-    private OrthographicCamera camera;
-    private Box2DDebugRenderer debugRenderer;
-
-    /*
     controller
      */
     public boolean touchDown;
     public Vector3 mousePosition;
 
-
     public GameWorld() {
-        /*
-        renderer
-         */
-        camera = new OrthographicCamera(160f, 100f);
-        camera.position.set(80f, 50f, 0f);
-        camera.update();
-        batch = new SpriteBatch();
-        batch.setProjectionMatrix(camera.combined);
-        debugRenderer = new Box2DDebugRenderer();
-
         /*
         controller
          */
@@ -149,23 +130,15 @@ public class GameWorld {
         world.step(1/60f, 6, 2);
     }
 
-    public void render() {
-        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        camera.position.set(player.getPosition(), 0);
-        camera.update();
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
-        for (Sprite s : stars) {
-            s.draw(batch);
-        }
-        for (GravityObject o : gravityObjects) {
-            o.render();
-        }
-        batch.end();
-        debugRenderer.render(world, camera.combined);
+    public Player getPlayer() {
+        return player;
     }
 
-    public OrthographicCamera getCamera() {
-        return camera;
+    public Array<GravityObject> getGravityObjects() {
+        return gravityObjects;
+    }
+
+    public Array<Sprite> getStars() {
+        return stars;
     }
 }

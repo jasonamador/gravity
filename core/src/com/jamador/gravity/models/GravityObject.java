@@ -55,10 +55,8 @@ public class GravityObject {
         singleForce = new Vector2();
     }
 
-    public void render() {
-        sprite.setRotation(body.getAngle() * 57.3f);
-        sprite.setCenter(body.getPosition().x, body.getPosition().y);
-        sprite.draw(batch);
+    public Sprite getSprite() {
+        return sprite;
     }
 
     public void update() {
@@ -79,6 +77,10 @@ public class GravityObject {
             }
         }
         netForce.set(0,0);
+
+        /*renderer*/
+        sprite.setRotation(body.getAngle() * 57.3f);
+        sprite.setCenter(body.getPosition().x, body.getPosition().y);
     }
 
     public void applyGravity(float x, float y, float m) {
@@ -112,10 +114,6 @@ public class GravityObject {
     }
 
     private void grow() {
-        /*
-        mass += growRate;
-        radius = (float) Math.sqrt(mass / Math.PI);
-        */
         radius += growRate;
         fixture.getShape().setRadius(radius);
         body.resetMassData();
@@ -124,10 +122,6 @@ public class GravityObject {
     }
 
     private void shrink() {
-        /*
-        mass -= growRate;
-        radius = (float) Math.sqrt(mass / Math.PI);
-        */
         radius -= growRate;
         fixture.getShape().setRadius(radius);
         body.resetMassData();
