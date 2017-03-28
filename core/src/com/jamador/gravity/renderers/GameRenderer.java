@@ -28,7 +28,6 @@ public class GameRenderer {
         player = world.getPlayer();
         gravityObjects = world.getGravityObjects();
         stars = world.getStars();
-
         camera = new OrthographicCamera(160f, 100f);
         camera.position.set(80f, 50f, 0f);
         camera.update();

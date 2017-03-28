@@ -4,13 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.siondream.core.physics.MapBodyManager;
 
 import java.util.Random;
 
@@ -22,8 +19,9 @@ public class GameWorld {
     private Array<GravityObject> gravityObjects;
     private Array<Sprite> stars;
     private Player player;
-    private float playerMass = 4000;
+    private float playerMass = 500;
     private SpriteBatch batch;
+    private float power = 100;
 
     /*
     controller
@@ -74,24 +72,20 @@ public class GameWorld {
 
         /*
         level loader
-         */
         TiledMap map = new TmxMapLoader().load("test.tmx");
         MapBodyManager mapBodyManager = new MapBodyManager(world, 160 / 800, Gdx.files.internal("materials.json"), 0);
         //mapBodyManager.createPhysics(map, "physics");
+        */
 
         /*
         game objects
          */
-        player = new Player(world, batch, new Vector2(80, 50), 35f);
+        player = new Player(this, batch, new Vector2(80, 50), 35f);
 
         Random r = new Random();
         gravityObjects = new Array<GravityObject>();
-        /*
-        gravityObjects.add(new GravityObject(world, batch, new Vector2(70, 50), 50));
-        gravityObjects.add(new GravityObject(world, batch, new Vector2(90, 50), 30));
-        */
         for (int x=0; x<15; x++) {
-            gravityObjects.add(new GravityObject(world, batch, new Vector2(r.nextFloat() * 160,
+            gravityObjects.add(new GravityObject(this, batch, new Vector2(r.nextFloat() * 160,
                     r.nextFloat() * 100), r.nextFloat() * 50 + 1));
         }
         gravityObjects.add(player);
@@ -99,12 +93,12 @@ public class GameWorld {
         /*
         background
          */
-        Sprite star = new Sprite(new Texture(Gdx.files.internal("ball.png")));
+        Sprite star = new Sprite(new Texture(Gdx.files.internal("star.png")));
         star.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         stars = new Array<Sprite>();
         float size, x, y;
         for (int i=0; i < 400; i++) {
-            size = r.nextFloat() * 1;
+            size = r.nextFloat() * 1.5f;
             x = r.nextFloat() * 480 - 160;
             y = r.nextFloat() * 300 - 100;
             star.setPosition(x, y);
@@ -114,12 +108,17 @@ public class GameWorld {
     }
 
     public void update() {
+        if (touchDown) {
+            power -= 0.1;
+            System.out.println(power);
+        }
         for (GravityObject o : gravityObjects) {
             if (!o.active) {
                 gravityObjects.removeValue(o, true);
             }
-            if (touchDown)
+            if (touchDown && power > 0) {
                 o.applyGravity(mousePosition.x, mousePosition.y, playerMass);
+            }
             o.update();
         }
         for (int i = 0; i < gravityObjects.size; i++)
@@ -140,5 +139,9 @@ public class GameWorld {
 
     public Array<Sprite> getStars() {
         return stars;
+    }
+
+    public World getWorld() {
+        return world;
     }
 }

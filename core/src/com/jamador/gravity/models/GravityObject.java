@@ -6,11 +6,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import java.util.Random;
 
 /**
  * Created by jason on 3/20/17.
  */
 public class GravityObject {
+    private GameWorld world;
     private Sprite sprite;
     private Body body;
     private Fixture fixture;
@@ -26,7 +28,8 @@ public class GravityObject {
     public boolean shrinking = false;
     public boolean active = true;
 
-    public GravityObject(World world, SpriteBatch batch, Vector2 position, float mass) {
+    public GravityObject(GameWorld world, SpriteBatch batch, Vector2 position, float mass) {
+        this.world = world;
         this.batch = batch;
         this.mass = mass;
         radius = (float) Math.sqrt(mass / Math.PI);
@@ -37,18 +40,22 @@ public class GravityObject {
         BodyDef bd = new BodyDef();
         bd.type = BodyDef.BodyType.DynamicBody;
         bd.position.set(position);
-        body = world.createBody(bd);
+        body = world.getWorld().createBody(bd);
         body.setUserData(this);
 
         FixtureDef fd = new FixtureDef();
         fd.shape = new CircleShape();
         fd.shape.setRadius(radius);
         fd.density = 1f;
-        fd.friction = 0.5f;
+        fd.friction = 0.6f;
+        fd.restitution = 0.3f;
         fixture = body.createFixture(fd);
 
+        Random r = new Random();
+        body.setLinearVelocity(new Vector2(r.nextFloat() * 3, r.nextFloat() * 3));
+
         sprite = new Sprite(new Texture(Gdx.files.internal("ball.png")));
-        sprite.setSize(radius * 2, radius * 2);
+        sprite.setSize(radius * 4, radius * 4);
         sprite.setOriginCenter();
 
         netForce = new Vector2();
@@ -74,6 +81,8 @@ public class GravityObject {
                 active = false;
                 shrinking = false;
                 body.destroyFixture(fixture);
+                world.getWorld().destroyBody(body);
+                //game over
             }
         }
         netForce.set(0,0);
@@ -117,7 +126,7 @@ public class GravityObject {
         radius += growRate;
         fixture.getShape().setRadius(radius);
         body.resetMassData();
-        sprite.setSize(radius*2, radius*2);
+        sprite.setSize(radius*4, radius*4);
         sprite.setOriginCenter();
     }
 
@@ -125,7 +134,7 @@ public class GravityObject {
         radius -= growRate;
         fixture.getShape().setRadius(radius);
         body.resetMassData();
-        sprite.setSize(radius *2, radius * 2);
+        sprite.setSize(radius * 4, radius * 4);
         sprite.setOriginCenter();
     }
 }

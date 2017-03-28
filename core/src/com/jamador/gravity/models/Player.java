@@ -9,7 +9,8 @@ import com.badlogic.gdx.physics.box2d.World;
  */
 public class Player extends GravityObject{
 
-    public Player(World world, SpriteBatch batch, Vector2 position, float mass) {
+    public Player(GameWorld world, SpriteBatch batch, Vector2 position, float mass) {
         super(world, batch, position, mass);
+        getSprite().setColor(1f, 0.5f, 0.5f, 1f);
     }
 }
