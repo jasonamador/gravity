@@ -11,6 +11,5 @@ public class Player extends GravityObject{
 
     public Player(GameWorld world, SpriteBatch batch, Vector2 position, float mass) {
         super(world, batch, position, mass);
-        getSprite().setColor(1f, 0.5f, 0.5f, 1f);
     }
 }

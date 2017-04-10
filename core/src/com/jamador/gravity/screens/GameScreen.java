@@ -32,8 +32,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-        gameWorld.update();
+        //temp for debug draw
         gameRenderer.render();
+        gameWorld.update();
     }
 
     @Override

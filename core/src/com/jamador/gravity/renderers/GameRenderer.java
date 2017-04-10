@@ -46,7 +46,7 @@ public class GameRenderer {
             s.draw(batch);
         }
         for (GravityObject o : gravityObjects) {
-            o.getSprite().draw(batch);
+            o.render(batch);
         }
         batch.end();
         //debugRenderer.render(world, camera.combined);

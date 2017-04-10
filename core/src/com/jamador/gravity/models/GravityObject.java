@@ -13,7 +13,8 @@ import java.util.Random;
  */
 public class GravityObject {
     private GameWorld world;
-    private Sprite sprite;
+    private Sprite ball;
+    private Sprite arrow;
     private Body body;
     private Fixture fixture;
     private SpriteBatch batch;
@@ -21,7 +22,8 @@ public class GravityObject {
     private float radius;
     private float mass;
     private float newMass;
-    private float g = 25;
+    private float maxForceFactor;
+    private float g = 40;
     private float growRate;
     private float growTime = 0.5f;
     public boolean growing = false;
@@ -54,19 +56,23 @@ public class GravityObject {
         Random r = new Random();
         body.setLinearVelocity(new Vector2(r.nextFloat() * 3, r.nextFloat() * 3));
 
-        sprite = new Sprite(new Texture(Gdx.files.internal("ball.png")));
-        sprite.setSize(radius * 4, radius * 4);
-        sprite.setOriginCenter();
+        ball = new Sprite(new Texture(Gdx.files.internal("ball.png")));
+        ball.setSize(radius * 2, radius * 2);
+        ball.setOriginCenter();
+        arrow = new Sprite(new Texture(Gdx.files.internal("arrow.png")));
+        arrow.setSize(radius * 2, radius * 2);
+        arrow.setOriginCenter();
 
         netForce = new Vector2();
         singleForce = new Vector2();
-    }
-
-    public Sprite getSprite() {
-        return sprite;
+        maxForceFactor = 1000;
     }
 
     public void update() {
+        float maxForce = maxForceFactor * body.getMass();
+        if (netForce.len2() > maxForce) {
+            netForce.setLength2(maxForce);
+        }
         body.applyForceToCenter(netForce, true);
         if(growing) {
             if (body.getMass() < newMass)
@@ -85,11 +91,19 @@ public class GravityObject {
                 //game over
             }
         }
-        netForce.set(0,0);
+    }
 
+    public void render(SpriteBatch batch) {
         /*renderer*/
-        sprite.setRotation(body.getAngle() * 57.3f);
-        sprite.setCenter(body.getPosition().x, body.getPosition().y);
+        ball.setRotation(body.getAngle() * 57.3f);
+        ball.setCenter(body.getPosition().x, body.getPosition().y);
+        ball.draw(batch);
+        arrow.setRotation(netForce.angle() + 45 + 180);
+        arrow.setPosition(ball.getX(), ball.getY());
+        float alpha = netForce.len2() / (maxForceFactor / 3 * body.getMass());
+        arrow.setAlpha(alpha > 1 ? 1 : alpha);
+        arrow.draw(batch);
+        netForce.set(0,0);
     }
 
     public void applyGravity(float x, float y, float m) {
@@ -106,6 +120,10 @@ public class GravityObject {
 
     public Vector2 getPosition() {
         return body.getPosition();
+    }
+
+    public Sprite getSprite() {
+        return ball;
     }
 
     public void startGrow(float m) {
@@ -126,15 +144,19 @@ public class GravityObject {
         radius += growRate;
         fixture.getShape().setRadius(radius);
         body.resetMassData();
-        sprite.setSize(radius*4, radius*4);
-        sprite.setOriginCenter();
+        ball.setSize(radius*2, radius*2);
+        ball.setOriginCenter();
+        arrow.setSize(radius*2, radius*2);
+        arrow.setOriginCenter();
     }
 
     private void shrink() {
         radius -= growRate;
         fixture.getShape().setRadius(radius);
         body.resetMassData();
-        sprite.setSize(radius * 4, radius * 4);
-        sprite.setOriginCenter();
+        ball.setSize(radius * 2, radius * 2);
+        ball.setOriginCenter();
+        arrow.setSize(radius * 2, radius * 2);
+        arrow.setOriginCenter();
     }
 }

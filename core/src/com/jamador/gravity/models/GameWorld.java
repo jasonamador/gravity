@@ -4,10 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+
 
 import java.util.Random;
 
@@ -15,6 +17,7 @@ import java.util.Random;
  * Created by jason on 3/21/17.
  */
 public class GameWorld {
+    private ShapeRenderer shapeRenderer;
     private World world;
     private Array<GravityObject> gravityObjects;
     private Array<Sprite> stars;
@@ -91,6 +94,12 @@ public class GameWorld {
         gravityObjects.add(player);
 
         /*
+        Shape Renderer
+        */
+        this.shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setAutoShapeType(true);
+
+        /*
         background
          */
         Sprite star = new Sprite(new Texture(Gdx.files.internal("star.png")));
@@ -112,6 +121,16 @@ public class GameWorld {
             power -= 0.1;
             System.out.println(power);
         }
+        shapeRenderer.begin();
+        for (int i = 0; i < gravityObjects.size; i++)
+            for (int j = i; j < gravityObjects.size; j++) {
+                gravityObjects.get(i).applyGravity(gravityObjects.get(j).getPosition().x, gravityObjects.get(j).getPosition().y, gravityObjects.get(j).getMass());
+                gravityObjects.get(j).applyGravity(gravityObjects.get(i).getPosition().x, gravityObjects.get(i).getPosition().y, gravityObjects.get(i).getMass());
+                //debug line draw
+                shapeRenderer.setColor(1, 1, 1, 1);
+                shapeRenderer.line(gravityObjects.get(i).getPosition().x, gravityObjects.get(i).getPosition().y, gravityObjects.get(j).getPosition().x, gravityObjects.get(j).getPosition().y);
+            }
+        shapeRenderer.end();
         for (GravityObject o : gravityObjects) {
             if (!o.active) {
                 gravityObjects.removeValue(o, true);
@@ -121,11 +140,6 @@ public class GameWorld {
             }
             o.update();
         }
-        for (int i = 0; i < gravityObjects.size; i++)
-            for (int j = i; j < gravityObjects.size; j++) {
-                gravityObjects.get(i).applyGravity(gravityObjects.get(j).getPosition().x, gravityObjects.get(j).getPosition().y, gravityObjects.get(j).getMass());
-                gravityObjects.get(j).applyGravity(gravityObjects.get(i).getPosition().x, gravityObjects.get(i).getPosition().y, gravityObjects.get(i).getMass());
-            }
         world.step(1/60f, 6, 2);
     }
 
