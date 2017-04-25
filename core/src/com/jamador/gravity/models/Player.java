@@ -10,7 +10,27 @@ import com.badlogic.gdx.physics.box2d.World;
  */
 public class Player extends GravityObject{
 
-    public Player(GameWorld world, Vector2 position, float mass) {
-        super(world, position, mass, new Color(1, 1, 1, 1));
+    public Player(GravitySystem system, Vector2 position, float mass) {
+        super(system, position, mass, new Color(1, 1, 1, 1));
+    }
+
+    public void update() {
+        body.applyForceToCenter(netForce, true);
+        if (netForce.len2() / body.getMass() > system.maxAccel) {
+            netForce.setLength2(body.getMass() * system.maxAccel);
+        }
+        if(growing) {
+            if (body.getMass() < newMass)
+                grow();
+            else
+                growing = false;
+        }
+        if(shrinking) {
+            if (radius > 0.1)
+                shrink();
+            else {
+                system.getWorld().gameOver();
+            }
+        }
     }
 }

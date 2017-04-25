@@ -13,24 +13,21 @@ import java.util.Random;
  * Created by jason on 3/20/17.
  */
 public class GravityObject {
-    private GameWorld world;
-    private Sprite ball;
-    private Sprite arrow;
-    private Body body;
-    private Fixture fixture;
-    private Vector2 netForce, singleForce;
-    private float radius;
-    private float newMass;
-    private float g = 40;
-    private float growRate;
-    private float growTime = 0.5f;
-    private float maxAccel = 2f;
+    protected GravitySystem system;
+    protected Sprite ball;
+    protected Sprite arrow;
+    protected Body body;
+    protected Fixture fixture;
+    protected Vector2 netForce, singleForce;
+    protected float radius;
+    protected float newMass;
+    protected float growRate;
     public boolean growing = false;
     public boolean shrinking = false;
     public boolean active = true;
 
-    public GravityObject(GameWorld world, Vector2 position, float mass, Color color) {
-        this.world = world;
+    public GravityObject(GravitySystem system, Vector2 position, float mass, Color color) {
+        this.system = system;
         radius = (float) Math.sqrt(mass / Math.PI);
 
         /*
@@ -39,7 +36,7 @@ public class GravityObject {
         BodyDef bd = new BodyDef();
         bd.type = BodyDef.BodyType.DynamicBody;
         bd.position.set(position);
-        body = world.getWorld().createBody(bd);
+        body = system.getWorld().getWorld().createBody(bd);
         body.setUserData(this);
 
         FixtureDef fd = new FixtureDef();
@@ -67,8 +64,8 @@ public class GravityObject {
 
     public void update() {
         body.applyForceToCenter(netForce, true);
-        if (netForce.len2() / body.getMass() > maxAccel) {
-            netForce.setLength2(body.getMass() * maxAccel);
+        if (netForce.len2() / body.getMass() > system.maxAccel) {
+            netForce.setLength2(body.getMass() * system.maxAccel);
         }
         if(growing) {
             if (body.getMass() < newMass)
@@ -80,11 +77,7 @@ public class GravityObject {
             if (radius > 0.1)
                 shrink();
             else {
-                active = false;
-                shrinking = false;
-                body.destroyFixture(fixture);
-                world.getWorld().destroyBody(body);
-                //game over
+                destroy();
             }
         }
     }
@@ -104,11 +97,18 @@ public class GravityObject {
         netForce.set(0,0);
     }
 
+    public void destroy() {
+        active = false;
+        shrinking = false;
+        body.destroyFixture(fixture);
+        system.getWorld().getWorld().destroyBody(body);
+    }
+
     public void applyGravity(float x, float y, float m) {
         singleForce.set(x, y);
         singleForce.sub(body.getPosition());
         if (singleForce.len() > 1)
-            singleForce.setLength((float) (g * m/Math.pow(singleForce.len(), 2)));
+            singleForce.setLength((float) (system.g * m/Math.pow(singleForce.len(), 2)));
         netForce.add(singleForce);
     }
 
@@ -120,25 +120,21 @@ public class GravityObject {
         return body.getPosition();
     }
 
-    public Sprite getSprite() {
-        return ball;
-    }
-
     public void startGrow(float m) {
         growing = true;
         shrinking = false;
         newMass = m;
         float newRadius = (float) Math.sqrt(newMass / Math.PI);
-        growRate = (newRadius - radius) / (60 * growTime);
+        growRate = (newRadius - radius) / (60 * system.growTime);
     }
 
     public void startShrink() {
         shrinking = true;
         growing = false;
-        growRate = radius / (60 * growTime);
+        growRate = radius / (60 * system.growTime);
     }
 
-    private void grow() {
+    protected void grow() {
         radius += growRate;
         fixture.getShape().setRadius(radius);
         body.resetMassData();
@@ -148,7 +144,7 @@ public class GravityObject {
         arrow.setOriginCenter();
     }
 
-    private void shrink() {
+    protected void shrink() {
         radius -= growRate;
         fixture.getShape().setRadius(radius);
         body.resetMassData();

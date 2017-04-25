@@ -1,15 +1,25 @@
 package com.jamador.gravity.models;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+
+import java.util.Random;
 
 /**
  * Created by jason on 4/24/17.
  */
-public class GravityObjects {
+public class GravitySystem {
     private Array<GravityObject> gravityObjects;
+    private GameWorld world;
+    public float maxAccel = 1f;
+    public float g = 40f;
+    public float growTime = 0.5f;
 
-    public GravityObjects(Array<GravityObject> gos) {
+    public GravitySystem(GameWorld world, Array<GravityObject> gos) {
         gravityObjects = gos;
+        this.world = world;
     }
 
     public void add(GravityObject o) {
@@ -26,7 +36,7 @@ public class GravityObjects {
         }
     }
 
-    public Array<GravityObject> getArray() {
+    public Array<GravityObject> getObjects() {
         return gravityObjects;
     }
 
@@ -36,12 +46,22 @@ public class GravityObjects {
                 gravityObjects.get(i).applyGravity(gravityObjects.get(j).getPosition().x, gravityObjects.get(j).getPosition().y, gravityObjects.get(j).getMass());
                 gravityObjects.get(j).applyGravity(gravityObjects.get(i).getPosition().x, gravityObjects.get(i).getPosition().y, gravityObjects.get(i).getMass());
             }
-        for (GravityObject o : gravityObjects) {
-            if (!o.active) {
-                gravityObjects.removeValue(o, true);
+        for (int i = 0; i < gravityObjects.size; i++) {
+            if (!gravityObjects.get(i).active) {
+                gravityObjects.removeValue(gravityObjects.get(i), true);
             }
-            o.update();
+            gravityObjects.get(i).update();
         }
     }
 
+    public GameWorld getWorld() {
+        return world;
+    }
+
+    public void reset() {
+        for (GravityObject o: gravityObjects) {
+            o.destroy();
+        }
+        gravityObjects.clear();
+    }
 }

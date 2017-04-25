@@ -18,8 +18,8 @@ import java.util.Random;
  */
 public class GameWorld {
     private World world;
-    //private Array<GravityObject> gravityObjects;
-    private GravityObjects gravityObjects;
+    //private Array<GravityObject> gravitySystem;
+    private GravitySystem gravitySystem;
     private Array<Sprite> stars;
     private Player player;
     private float playerMass = 500;
@@ -74,25 +74,17 @@ public class GameWorld {
         });
 
         /*
-        level loader
-        TiledMap map = new TmxMapLoader().load("test.tmx");
-        MapBodyManager mapBodyManager = new MapBodyManager(world, 160 / 800, Gdx.files.internal("materials.json"), 0);
-        //mapBodyManager.createPhysics(map, "physics");
-        */
-
-        /*
-        game objects
+        create gravity system
          */
-        player = new Player(this, new Vector2(80, 50), 35f);
-
         Random r = new Random();
-        gravityObjects = new GravityObjects(new Array<GravityObject>());
+        gravitySystem = new GravitySystem(this, new Array<GravityObject>());
+        player = new Player(gravitySystem, new Vector2(80, 50), 35f);
 
         for (int x=0; x<15; x++) {
-            gravityObjects.add(new GravityObject(this, new Vector2(r.nextFloat() * 160,
+            gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 160,
                     r.nextFloat() * 100), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
         }
-        gravityObjects.add(player);
+        gravitySystem.add(player);
 
         /*
         stars
@@ -114,13 +106,23 @@ public class GameWorld {
     public void update() {
         if (touchDown) {
             power -= 0.1;
-            System.out.println(power);
         }
         if (touchDown && power > 0) {
-            gravityObjects.applyGravity(mousePosition.x, mousePosition.y, playerMass);
+            gravitySystem.applyGravity(mousePosition.x, mousePosition.y, playerMass);
         }
-        gravityObjects.update();
+        gravitySystem.update();
         world.step(1/60f, 6, 2);
+    }
+
+    public void gameOver() {
+        Random r = new Random();
+        gravitySystem.reset();
+        for (int x=0; x<15; x++) {
+            gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 160,
+                    r.nextFloat() * 100), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
+        }
+        player = new Player(gravitySystem, new Vector2(80, 50), 35f);
+        gravitySystem.add(player);
     }
 
     public Player getPlayer() {
@@ -128,7 +130,7 @@ public class GameWorld {
     }
 
     public Array<GravityObject> getGravityObjects() {
-        return gravityObjects.getArray();
+        return gravitySystem.getObjects();
     }
 
     public Array<Sprite> getStars() {

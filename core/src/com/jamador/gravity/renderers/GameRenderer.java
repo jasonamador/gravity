@@ -20,14 +20,12 @@ public class GameRenderer {
     private OrthographicCamera camera;
     private Box2DDebugRenderer debugRenderer;
     private SpriteBatch batch;
-    private Player player;
     private Array<GravityObject> gravityObjects;
     private Array<Sprite> stars;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     public GameRenderer(GameWorld world) {
         this.world = world;
-        player = world.getPlayer();
         gravityObjects = world.getGravityObjects();
         stars = world.getStars();
         camera = new OrthographicCamera(160f, 100f);
@@ -47,7 +45,7 @@ public class GameRenderer {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl20.glEnable(GL20.GL_BLEND);
 
-        camera.position.set(player.getPosition(), 0);
+        camera.position.set(world.getPlayer().getPosition(), 0);
         camera.update();
 
         //shape renderer
