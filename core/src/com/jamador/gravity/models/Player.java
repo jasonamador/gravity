@@ -1,5 +1,6 @@
 package com.jamador.gravity.models;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -9,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
  */
 public class Player extends GravityObject{
 
-    public Player(GameWorld world, SpriteBatch batch, Vector2 position, float mass) {
-        super(world, batch, position, mass);
+    public Player(GameWorld world, Vector2 position, float mass) {
+        super(world, position, mass, new Color(1, 1, 1, 1));
     }
 }

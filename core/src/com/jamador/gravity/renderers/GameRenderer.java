@@ -46,7 +46,11 @@ public class GameRenderer {
     public void render() {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl20.glEnable(GL20.GL_BLEND);
-        //drawing lines
+
+        camera.position.set(player.getPosition(), 0);
+        camera.update();
+
+        //shape renderer
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin();
         for (int i = 0; i < gravityObjects.size; i++)
@@ -54,8 +58,8 @@ public class GameRenderer {
                 shapeRenderer.line(gravityObjects.get(i).getPosition().x, gravityObjects.get(i).getPosition().y, gravityObjects.get(j).getPosition().x, gravityObjects.get(j).getPosition().y);
             }
         shapeRenderer.end();
-        camera.position.set(player.getPosition(), 0);
-        camera.update();
+
+        //sprite batch
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         for (Sprite s : stars) {

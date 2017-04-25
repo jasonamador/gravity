@@ -1,6 +1,7 @@
 package com.jamador.gravity.models;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,7 +18,8 @@ import java.util.Random;
  */
 public class GameWorld {
     private World world;
-    private Array<GravityObject> gravityObjects;
+    //private Array<GravityObject> gravityObjects;
+    private GravityObjects gravityObjects;
     private Array<Sprite> stars;
     private Player player;
     private float playerMass = 500;
@@ -81,19 +83,19 @@ public class GameWorld {
         /*
         game objects
          */
-        player = new Player(this, batch, new Vector2(80, 50), 35f);
+        player = new Player(this, new Vector2(80, 50), 35f);
 
         Random r = new Random();
-        gravityObjects = new Array<GravityObject>();
+        gravityObjects = new GravityObjects(new Array<GravityObject>());
+
         for (int x=0; x<15; x++) {
-            gravityObjects.add(new GravityObject(this, batch, new Vector2(r.nextFloat() * 160,
-                    r.nextFloat() * 100), r.nextFloat() * 50 + 1));
+            gravityObjects.add(new GravityObject(this, new Vector2(r.nextFloat() * 160,
+                    r.nextFloat() * 100), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
         }
         gravityObjects.add(player);
 
-
         /*
-        background
+        stars
          */
         Sprite star = new Sprite(new Texture(Gdx.files.internal("star.png")));
         star.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -114,20 +116,10 @@ public class GameWorld {
             power -= 0.1;
             System.out.println(power);
         }
-        for (int i = 0; i < gravityObjects.size; i++)
-            for (int j = i; j < gravityObjects.size; j++) {
-                gravityObjects.get(i).applyGravity(gravityObjects.get(j).getPosition().x, gravityObjects.get(j).getPosition().y, gravityObjects.get(j).getMass());
-                gravityObjects.get(j).applyGravity(gravityObjects.get(i).getPosition().x, gravityObjects.get(i).getPosition().y, gravityObjects.get(i).getMass());
-            }
-        for (GravityObject o : gravityObjects) {
-            if (!o.active) {
-                gravityObjects.removeValue(o, true);
-            }
-            if (touchDown && power > 0) {
-                o.applyGravity(mousePosition.x, mousePosition.y, playerMass);
-            }
-            o.update();
+        if (touchDown && power > 0) {
+            gravityObjects.applyGravity(mousePosition.x, mousePosition.y, playerMass);
         }
+        gravityObjects.update();
         world.step(1/60f, 6, 2);
     }
 
@@ -136,7 +128,7 @@ public class GameWorld {
     }
 
     public Array<GravityObject> getGravityObjects() {
-        return gravityObjects;
+        return gravityObjects.getArray();
     }
 
     public Array<Sprite> getStars() {
