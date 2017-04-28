@@ -75,7 +75,6 @@ public class MainMenuScreen implements Screen, InputProcessor {
         textRenderer.begin();
         GlyphLayout layout = new GlyphLayout(font, "GRAVITY");
         font.draw(textRenderer, "GRAVITY", (screenWidth / 2) - (layout.width / 2), (screenHeight / 2) - (layout.height / 2));
-        System.out.println(layout.width + ", " + layout.height + ", " + screenWidth + ", " + screenHeight);
         textRenderer.end();
     }
 

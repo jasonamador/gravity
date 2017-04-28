@@ -18,13 +18,14 @@ import java.util.Random;
  */
 public class GameWorld {
     private World world;
-    //private Array<GravityObject> gravitySystem;
     private GravitySystem gravitySystem;
     private Array<Sprite> stars;
     private Player player;
     private float playerMass = 500;
     private SpriteBatch batch;
     private float power = 100;
+    private int score;
+    private float time = 0f;
 
     /*
     controller
@@ -33,6 +34,8 @@ public class GameWorld {
     public Vector3 mousePosition;
 
     public GameWorld() {
+        score = 0;
+
         /*
         controller
          */
@@ -50,12 +53,16 @@ public class GameWorld {
                 a = (GravityObject) contact.getFixtureA().getBody().getUserData();
                 b = (GravityObject) contact.getFixtureB().getBody().getUserData();
                 if (a.getMass() > b.getMass()) {
+                    if (a.equals(player)) {
+                        score += 10 * b.getMass();
+                    }
                     a.startGrow(b.getMass() + a.getMass());
                     b.startShrink();
                 } else {
                     b.startGrow(a.getMass() + b.getMass());
                     a.startShrink();
                 }
+
             }
 
             @Override
@@ -111,6 +118,7 @@ public class GameWorld {
             gravitySystem.applyGravity(mousePosition.x, mousePosition.y, playerMass);
         }
         gravitySystem.update();
+        time += 0.01f;
         world.step(1/60f, 6, 2);
     }
 
@@ -139,5 +147,9 @@ public class GameWorld {
 
     public World getWorld() {
         return world;
+    }
+
+    public int getScore() {
+        return score;
     }
 }

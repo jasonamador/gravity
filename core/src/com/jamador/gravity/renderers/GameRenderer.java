@@ -25,9 +25,12 @@ public class GameRenderer {
     private Array<Sprite> stars;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
     private BitmapFont font;
-    private SpriteBatch fontRenderer;
+    private SpriteBatch textRenderer;
+    private int screenWidth, screenHeight;
 
     public GameRenderer(GameWorld world) {
+        screenWidth = Gdx.graphics.getWidth();
+        screenHeight = Gdx.graphics.getHeight();
         this.world = world;
         gravityObjects = world.getGravityObjects();
         stars = world.getStars();
@@ -43,10 +46,10 @@ public class GameRenderer {
         shapeRenderer.setAutoShapeType(true);
         shapeRenderer.setColor(.4f, .6f, .7f, .5f);
         /*
-        BitmapFont
-        font = new BitmapFont(Gdx.files.internal("font0.fnt"), Gdx.files.internal("font.png"), false);
-        fontRenderer = new SpriteBatch();
+        text
          */
+        font = new BitmapFont(Gdx.files.internal("font0.fnt"), Gdx.files.internal("font0.png"), false);
+        textRenderer = new SpriteBatch();
     }
 
     public void render() {
@@ -78,11 +81,11 @@ public class GameRenderer {
         batch.end();
 
         /*
-        text
-        fontRenderer.begin();
-        font.draw(fontRenderer, "Testing", 0, 15);
-        fontRenderer.end();
+        score
          */
+        textRenderer.begin();
+        font.draw(textRenderer, "SCORE: " + world.getScore(), 10, screenHeight - 30);
+        textRenderer.end();
     }
 
     public OrthographicCamera getCamera() {
