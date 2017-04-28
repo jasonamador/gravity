@@ -1,6 +1,7 @@
 package com.jamador.gravity.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.jamador.gravity.GravityGame;
@@ -69,7 +70,7 @@ public class GameScreen implements Screen, InputProcessor {
      */
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == KeyEvent.VK_ESCAPE)
+        if (keycode == KeyEvent.VK_ESCAPE || keycode == Input.Keys.BACK)
             gameWorld.gameOver();
         return false;
     }

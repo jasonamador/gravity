@@ -32,10 +32,14 @@ public class MainMenuScreen implements Screen, InputProcessor {
     private SpriteBatch textRenderer;
 
     public MainMenuScreen(GravityGame game) {
+        /*
+        android buttons
+         */
         this.game = game;
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
         Gdx.input.setInputProcessor(this);
+        Gdx.input.setCatchBackKey(true);
         ball = new Sprite(new Texture(Gdx.files.internal("ball.png")));
         ball.setCenter(screenWidth / 2, screenHeight / 2);
         batch = new SpriteBatch();
