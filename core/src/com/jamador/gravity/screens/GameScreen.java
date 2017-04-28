@@ -70,7 +70,7 @@ public class GameScreen implements Screen, InputProcessor {
      */
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == KeyEvent.VK_ESCAPE || keycode == Input.Keys.BACK)
+        if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK)
             gameWorld.gameOver();
         return false;
     }

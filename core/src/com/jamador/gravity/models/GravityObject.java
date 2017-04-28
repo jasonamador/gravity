@@ -95,8 +95,10 @@ public class GravityObject {
         ball.setRotation(body.getAngle() * 57.3f);
         ball.setCenter(body.getPosition().x, body.getPosition().y);
         ball.draw(batch);
-        arrow.setRotation(netForce.angle() + 45 + 180);
-        arrow.setPosition(ball.getX(), ball.getY());
+        if (system.getObjects().size > 1) {
+            arrow.setRotation(netForce.angle() + 45 + 180);
+            arrow.setPosition(ball.getX(), ball.getY());
+        }
         /*
         float alpha = netForce.len2() / maxForceFactor;
         arrow.setAlpha(alpha > 1 ? 1 : alpha);
