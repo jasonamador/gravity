@@ -7,6 +7,8 @@ import com.jamador.gravity.GravityGame;
 import com.jamador.gravity.models.GameWorld;
 import com.jamador.gravity.renderers.GameRenderer;
 
+import java.awt.event.KeyEvent;
+
 /**
  * Created by jason on 3/19/17.
  */
@@ -67,6 +69,8 @@ public class GameScreen implements Screen, InputProcessor {
      */
     @Override
     public boolean keyDown(int keycode) {
+        if (keycode == KeyEvent.VK_ESCAPE)
+            gameWorld.gameOver();
         return false;
     }
 

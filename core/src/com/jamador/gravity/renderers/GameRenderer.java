@@ -3,6 +3,7 @@ package com.jamador.gravity.renderers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -23,6 +24,8 @@ public class GameRenderer {
     private Array<GravityObject> gravityObjects;
     private Array<Sprite> stars;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private BitmapFont font;
+    private SpriteBatch fontRenderer;
 
     public GameRenderer(GameWorld world) {
         this.world = world;
@@ -39,6 +42,11 @@ public class GameRenderer {
         */
         shapeRenderer.setAutoShapeType(true);
         shapeRenderer.setColor(.4f, .6f, .7f, .5f);
+        /*
+        BitmapFont
+        font = new BitmapFont(Gdx.files.internal("font0.fnt"), Gdx.files.internal("font.png"), false);
+        fontRenderer = new SpriteBatch();
+         */
     }
 
     public void render() {
@@ -68,7 +76,13 @@ public class GameRenderer {
             o.render(batch);
         }
         batch.end();
-        //debugRenderer.render(world, camera.combined);
+
+        /*
+        text
+        fontRenderer.begin();
+        font.draw(fontRenderer, "Testing", 0, 15);
+        fontRenderer.end();
+         */
     }
 
     public OrthographicCamera getCamera() {

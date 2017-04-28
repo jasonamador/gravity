@@ -8,6 +8,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -26,6 +28,8 @@ public class MainMenuScreen implements Screen, InputProcessor {
 
     private SpriteBatch batch;
     private Sprite ball;
+    private BitmapFont font;
+    private SpriteBatch textRenderer;
 
     public MainMenuScreen(GravityGame game) {
         this.game = game;
@@ -35,6 +39,12 @@ public class MainMenuScreen implements Screen, InputProcessor {
         ball = new Sprite(new Texture(Gdx.files.internal("ball.png")));
         ball.setCenter(screenWidth / 2, screenHeight / 2);
         batch = new SpriteBatch();
+
+        /*
+        text
+         */
+        font = new BitmapFont(Gdx.files.internal("font0.fnt"), Gdx.files.internal("font0.png"), false);
+        textRenderer = new SpriteBatch();
     }
 
     /*
@@ -49,9 +59,20 @@ public class MainMenuScreen implements Screen, InputProcessor {
     @Override
     public void render(float delta) {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        /*
         batch.begin();
         ball.draw(batch);
         batch.end();
+        */
+
+        /*
+        text
+         */
+        textRenderer.begin();
+        GlyphLayout layout = new GlyphLayout(font, "GRAVITY");
+        font.draw(textRenderer, "GRAVITY", (screenWidth / 2) - (layout.width / 2), (screenHeight / 2) - (layout.height / 2));
+        System.out.println(layout.width + ", " + layout.height + ", " + screenWidth + ", " + screenHeight);
+        textRenderer.end();
     }
 
     @Override

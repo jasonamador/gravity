@@ -36,7 +36,7 @@ public class GravityObject {
         BodyDef bd = new BodyDef();
         bd.type = BodyDef.BodyType.DynamicBody;
         bd.position.set(position);
-        body = system.getWorld().getWorld().createBody(bd);
+        body = system.get2DWorld().createBody(bd);
         body.setUserData(this);
 
         FixtureDef fd = new FixtureDef();
@@ -80,6 +80,14 @@ public class GravityObject {
                 destroy();
             }
         }
+        /*
+        max velocity logic
+         */
+        if (body.getLinearVelocity().len2() >= system.maxVelocity) {
+            Vector2 newVelocity = body.getLinearVelocity();
+            newVelocity.setLength2(system.maxVelocity);
+            body.setLinearVelocity(newVelocity);
+        }
     }
 
     public void render(SpriteBatch batch) {
@@ -97,10 +105,13 @@ public class GravityObject {
         netForce.set(0,0);
     }
 
+    //this should probably be a GravitySystem method
     public void destroy() {
         active = false;
         shrinking = false;
         body.destroyFixture(fixture);
+        system.g += body.getMass();
+        // make a new getter for this
         system.getWorld().getWorld().destroyBody(body);
     }
 
