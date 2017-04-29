@@ -18,7 +18,6 @@ public class GameScreen implements Screen, InputProcessor {
     private GameWorld gameWorld;
     private GameRenderer gameRenderer;
 
-
     public GameScreen(GravityGame game) {
         this.game = game;
         gameWorld = new GameWorld();

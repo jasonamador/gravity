@@ -152,4 +152,8 @@ public class GameWorld {
     public int getScore() {
         return score;
     }
+
+    public float getPower() {
+        return power;
+    }
 }

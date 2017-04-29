@@ -85,6 +85,7 @@ public class GameRenderer {
          */
         textRenderer.begin();
         font.draw(textRenderer, "SCORE: " + world.getScore(), 10, screenHeight - 30);
+        font.draw(textRenderer, "POWER " + world.getPower(), 10, screenHeight - 60);
         textRenderer.end();
     }
 
