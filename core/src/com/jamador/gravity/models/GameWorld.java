@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.Random;
 
+import static com.badlogic.gdx.physics.box2d.BodyDef.BodyType.DynamicBody;
+
 /**
  * Created by jason on 3/21/17.
  */
@@ -25,7 +27,6 @@ public class GameWorld {
     private SpriteBatch batch;
     private float power = 100;
     private int score;
-    private float time = 0f;
 
     /*
     controller
@@ -50,19 +51,21 @@ public class GameWorld {
             private GravityObject a, b;
             @Override
             public void beginContact(Contact contact) {
-                a = (GravityObject) contact.getFixtureA().getBody().getUserData();
-                b = (GravityObject) contact.getFixtureB().getBody().getUserData();
-                if (a.getMass() > b.getMass()) {
-                    if (a.equals(player)) {
-                        score += 10 * b.getMass();
+                if (contact.getFixtureA().getBody().getUserData() instanceof GravityObject
+                        && contact.getFixtureA().getBody().getUserData() instanceof GravityObject) {
+                    a = (GravityObject) contact.getFixtureA().getBody().getUserData();
+                    b = (GravityObject) contact.getFixtureB().getBody().getUserData();
+                    if (a.getMass() > b.getMass()) {
+                        if (a.equals(player)) {
+                            score += 10 * b.getMass();
+                        }
+                        a.startGrow(b.getMass() + a.getMass());
+                        b.startShrink();
+                    } else {
+                        b.startGrow(a.getMass() + b.getMass());
+                        a.startShrink();
                     }
-                    a.startGrow(b.getMass() + a.getMass());
-                    b.startShrink();
-                } else {
-                    b.startGrow(a.getMass() + b.getMass());
-                    a.startShrink();
                 }
-
             }
 
             @Override
@@ -79,6 +82,48 @@ public class GameWorld {
 
             }
         });
+
+        /*
+        arena
+         */
+        BodyDef bd = new BodyDef();
+        PolygonShape rect = new PolygonShape();
+
+        /*
+        bottom
+         */
+        bd.position.set(new Vector2(0, 1f));
+        Body bottomBody = world.createBody(bd);
+        rect.setAsBox(160f, 1f);
+        bottomBody.createFixture(rect, 1.0f);
+        //rect.dispose();
+
+        /*
+        top
+         */
+        bd.position.set(new Vector2(0, 99f));
+        Body topBody = world.createBody(bd);
+        rect.setAsBox(160f, 1f);
+        topBody.createFixture(rect, 1.0f);
+        //rect.dispose();
+
+        /*
+        left
+         */
+        bd.position.set(new Vector2(1, 0f));
+        Body leftBody = world.createBody(bd);
+        rect.setAsBox(1f, 160f);
+        leftBody.createFixture(rect, 1.0f);
+        //rect.dispose();
+
+        /*
+        right
+         */
+        bd.position.set(new Vector2(159, 0f));
+        Body rightBody = world.createBody(bd);
+        rect.setAsBox(1f, 160f);
+        rightBody.createFixture(rect, 1.0f);
+        //rect.dispose();
 
         /*
         create gravity system
@@ -118,7 +163,6 @@ public class GameWorld {
             gravitySystem.applyGravity(mousePosition.x, mousePosition.y, playerMass);
         }
         gravitySystem.update();
-        time += 0.01f;
         world.step(1/60f, 6, 2);
     }
 

@@ -40,11 +40,13 @@ public class GameRenderer {
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
         debugRenderer = new Box2DDebugRenderer();
+
         /*
         Shape Renderer
         */
         shapeRenderer.setAutoShapeType(true);
         shapeRenderer.setColor(.4f, .6f, .7f, .5f);
+
         /*
         text
          */
@@ -56,10 +58,15 @@ public class GameRenderer {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl20.glEnable(GL20.GL_BLEND);
 
+        /*
+        camera follows player
         camera.position.set(world.getPlayer().getPosition(), 0);
         camera.update();
+         */
 
-        //shape renderer
+        /*
+        shape renderer
+         */
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin();
         for (int i = 0; i < gravityObjects.size; i++)
@@ -68,13 +75,14 @@ public class GameRenderer {
             }
         shapeRenderer.end();
 
-        //sprite batch
+        /*
+        sprite batch
+         */
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         for (Sprite s : stars) {
             s.draw(batch);
         }
-
         for (GravityObject o : gravityObjects) {
             o.render(batch);
         }
@@ -87,6 +95,11 @@ public class GameRenderer {
         font.draw(textRenderer, "SCORE: " + world.getScore(), 10, screenHeight - 30);
         font.draw(textRenderer, "POWER " + world.getPower(), 10, screenHeight - 60);
         textRenderer.end();
+
+        /*
+        box2d debug
+         */
+        debugRenderer.render(world.getWorld(), camera.combined);
     }
 
     public OrthographicCamera getCamera() {

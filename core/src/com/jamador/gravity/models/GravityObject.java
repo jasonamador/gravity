@@ -44,7 +44,7 @@ public class GravityObject {
         fd.shape.setRadius(radius);
         fd.density = 1f;
         fd.friction = 0.6f;
-        fd.restitution = 0.3f;
+        fd.restitution = 1.0f;
         fixture = body.createFixture(fd);
 
         Random r = new Random();

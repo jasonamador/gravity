@@ -16,7 +16,7 @@ public class GravitySystem {
     public float maxAccel = 1f;
     public float g = 40f;
     public float growTime = 0.5f;
-    public float maxVelocity = 16f;
+    public float maxVelocity = 60f;
 
     public GravitySystem(GameWorld world, Array<GravityObject> gos) {
         gravityObjects = gos;
