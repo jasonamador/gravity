@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import java.util.Random;
@@ -22,6 +23,7 @@ public class GravityObject {
     protected float radius;
     protected float newMass;
     protected float growRate;
+    protected Circle bounds;
     public boolean growing = false;
     public boolean shrinking = false;
     public boolean active = true;
@@ -29,6 +31,11 @@ public class GravityObject {
     public GravityObject(GravitySystem system, Vector2 position, float mass, Color color) {
         this.system = system;
         radius = (float) Math.sqrt(mass / Math.PI);
+
+        /*
+        bounds
+         */
+        bounds = new Circle(position, radius);
 
         /*
         box2d definitions
@@ -64,6 +71,7 @@ public class GravityObject {
 
     public void update() {
         body.applyForceToCenter(netForce, true);
+        bounds.setPosition(body.getPosition());
         if (netForce.len2() / body.getMass() > system.maxAccel) {
             netForce.setLength2(body.getMass() * system.maxAccel);
         }
@@ -133,6 +141,10 @@ public class GravityObject {
         return body.getPosition();
     }
 
+    public boolean contains(float x, float y) {
+        return bounds.contains(x, y);
+    }
+
     public void startGrow(float m) {
         growing = true;
         shrinking = false;
@@ -150,6 +162,7 @@ public class GravityObject {
     protected void grow() {
         radius += growRate;
         fixture.getShape().setRadius(radius);
+        bounds.setRadius(radius);
         body.resetMassData();
         ball.setSize(radius*2, radius*2);
         ball.setOriginCenter();
@@ -160,6 +173,7 @@ public class GravityObject {
     protected void shrink() {
         radius -= growRate;
         fixture.getShape().setRadius(radius);
+        bounds.setRadius(radius);
         body.resetMassData();
         ball.setSize(radius * 2, radius * 2);
         ball.setOriginCenter();

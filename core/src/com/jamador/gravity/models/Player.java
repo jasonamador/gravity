@@ -16,6 +16,7 @@ public class Player extends GravityObject{
 
     public void update() {
         body.applyForceToCenter(netForce, true);
+        bounds.setPosition(body.getPosition());
         if (netForce.len2() / body.getMass() > system.maxAccel) {
             netForce.setLength2(body.getMass() * system.maxAccel);
         }

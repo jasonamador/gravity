@@ -156,10 +156,8 @@ public class GameWorld {
     }
 
     public void update() {
-        if (touchDown) {
-            power -= 0.1;
-        }
         if (touchDown && power > 0) {
+            power -= 0.1;
             gravitySystem.applyGravity(mousePosition.x, mousePosition.y, playerMass);
         }
         gravitySystem.update();

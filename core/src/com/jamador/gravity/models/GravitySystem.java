@@ -33,7 +33,9 @@ public class GravitySystem {
 
     public void applyGravity(float x, float y, float m) {
         for (GravityObject o : gravityObjects) {
-            o.applyGravity(x, y, m);
+            if (!o.contains(x, y)) {
+                o.applyGravity(x, y, m);
+            }
         }
     }
 
