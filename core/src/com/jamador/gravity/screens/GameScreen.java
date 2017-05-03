@@ -71,6 +71,9 @@ public class GameScreen implements Screen, InputProcessor {
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK)
             gameWorld.gameOver();
+        if (keycode == Input.Keys.PLUS) {
+            gameWorld.increaseTimestep();
+        }
         return false;
     }
 

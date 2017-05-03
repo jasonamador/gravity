@@ -59,12 +59,6 @@ public class GameRenderer {
         Gdx.gl20.glEnable(GL20.GL_BLEND);
 
         /*
-        camera follows player
-        camera.position.set(world.getPlayer().getPosition(), 0);
-        camera.update();
-         */
-
-        /*
         shape renderer
          */
         shapeRenderer.setProjectionMatrix(camera.combined);

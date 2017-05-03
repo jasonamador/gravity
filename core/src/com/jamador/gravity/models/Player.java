@@ -35,11 +35,11 @@ public class Player extends GravityObject{
         }
         /*
         max velocity logic
-         */
         if (body.getLinearVelocity().len2() >= system.maxVelocity) {
             Vector2 newVelocity = body.getLinearVelocity();
             newVelocity.setLength2(system.maxVelocity);
             body.setLinearVelocity(newVelocity);
         }
+         */
     }
 }

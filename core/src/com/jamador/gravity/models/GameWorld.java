@@ -27,6 +27,7 @@ public class GameWorld {
     private SpriteBatch batch;
     private float power = 100;
     private int score;
+    private float timestep = 1/60f;
 
     /*
     controller
@@ -158,21 +159,33 @@ public class GameWorld {
     public void update() {
         if (touchDown && power > 0) {
             power -= 0.1;
-            gravitySystem.applyGravity(mousePosition.x, mousePosition.y, playerMass);
+            gravitySystem.applyGravity(mousePosition.x, mousePosition.y, player.getMass() * 100);
         }
         gravitySystem.update();
-        world.step(1/60f, 6, 2);
+        world.step(timestep, 6, 2);
+    }
+
+    public void increaseTimestep() {
+        timestep += 1/60f;
     }
 
     public void gameOver() {
+        System.out.println("gameOver called");
         Random r = new Random();
         gravitySystem.reset();
+        System.out.println("post gsystem reset");
+        power = 100;
+        score = 0;
+        timestep = 1/60f;
         for (int x=0; x<15; x++) {
             gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 160,
                     r.nextFloat() * 100), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
         }
+        System.out.println("post gsystem creation");
         player = new Player(gravitySystem, new Vector2(80, 50), 35f);
+        System.out.println("post player creation");
         gravitySystem.add(player);
+        System.out.println("post player add");
     }
 
     public Player getPlayer() {
