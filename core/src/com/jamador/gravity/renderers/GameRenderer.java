@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.Array;
 import com.jamador.gravity.models.GameWorld;
 import com.jamador.gravity.models.GravityObject;
 
+import java.util.Random;
+
 public class GameRenderer {
     private GameWorld world;
     private OrthographicCamera camera;
@@ -31,7 +33,6 @@ public class GameRenderer {
         screenHeight = Gdx.graphics.getHeight();
         this.world = world;
         gravityObjects = world.getGravityObjects();
-        stars = world.getStars();
         camera = new OrthographicCamera(160f, 100f);
         camera.position.set(80f, 50f, 0f);
         camera.update();
@@ -52,11 +53,28 @@ public class GameRenderer {
         textRenderer = new SpriteBatch();
 
         /*
-        sprites
+        touchpoint
          */
         touchpoint = new Sprite(new Texture(Gdx.files.internal("touchpoint.png")));
         touchpoint.setSize(15, 15);
         touchpoint.setOriginCenter();
+
+        /*
+        stars
+         */
+        Random r = new Random();
+        Sprite star = new Sprite(new Texture(Gdx.files.internal("star.png")));
+        star.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        stars = new Array<Sprite>();
+        float size, x, y;
+        for (int i=0; i < 200; i++) {
+            size = r.nextFloat() * 1.5f;
+            x = r.nextFloat() * 160;
+            y = r.nextFloat() * 100;
+            star.setPosition(x, y);
+            star.setSize(size, size);
+            stars.add(new Sprite(star));
+        }
     }
 
     public void render() {

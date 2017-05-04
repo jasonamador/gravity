@@ -3,7 +3,6 @@ package com.jamador.gravity.models;
 import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.utils.Array;
 public class GameWorld {
     private World world;
     private GravitySystem gravitySystem;
-    private Array<Sprite> stars;
     private Player player;
     private float power = 100;
     private int score;
@@ -140,27 +138,12 @@ public class GameWorld {
         player = new Player(gravitySystem, new Vector2(80, 50), 30f);
         gravitySystem.add(player);
 
-        /*
-        stars
-         */
-        Sprite star = new Sprite(new Texture(Gdx.files.internal("star.png")));
-        star.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        stars = new Array<Sprite>();
-        float size, x, y;
-        for (int i=0; i < 400; i++) {
-            size = r.nextFloat() * 1.5f;
-            x = r.nextFloat() * 480 - 160;
-            y = r.nextFloat() * 300 - 100;
-            star.setPosition(x, y);
-            star.setSize(size, size);
-            stars.add(new Sprite(star));
-        }
     }
 
     public void update() {
         if (touchDown && power > 0) {
             power -= 0.1;
-            gravitySystem.applyGravity(mousePosition.x, mousePosition.y, player.getMass() * 100);
+            gravitySystem.applyGravity(mousePosition.x, mousePosition.y, player.getMass() * 50);
         }
         gravitySystem.update();
         world.step(timestep, 6, 2);
@@ -219,11 +202,7 @@ public class GameWorld {
         return gravitySystem.getObjects();
     }
 
-    public Array<Sprite> getStars() {
-        return stars;
-    }
-
-    public World getWorld() {
+    World getWorld() {
         return world;
     }
 
