@@ -113,15 +113,18 @@ public class GameWorld {
         //rect.dispose();
 
         /*
-        create gravity system
+        gravity system
          */
         Random r = new Random();
         gravitySystem = new GravitySystem(this, new Array<GravityObject>());
         player = new Player(gravitySystem, new Vector2(80, 50), 35f);
 
+        /*
+        random
+         */
         for (int x=0; x<15; x++) {
-            gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 160,
-                    r.nextFloat() * 100), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
+            gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
+                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
         }
         gravitySystem.add(player);
 
@@ -160,8 +163,8 @@ public class GameWorld {
         score = 0;
         timestep = 1/60f;
         for (int x=0; x<15; x++) {
-            gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 160,
-                    r.nextFloat() * 100), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
+            gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
+                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
         }
         System.out.println("post gsystem creation");
         player = new Player(gravitySystem, new Vector2(80, 50), 35f);
