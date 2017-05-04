@@ -1,21 +1,13 @@
 package com.jamador.gravity.models;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.Random;
-
-/**
- * Created by jason on 4/24/17.
- */
 public class GravitySystem {
     private Array<GravityObject> gravityObjects;
     private GameWorld world;
-    public float maxAccel = 1f;
-    public float g = 40f;
-    public float growTime = 0.5f;
+    float g = 40f;
+    float growTime = 0.5f;
 
     public GravitySystem(GameWorld world, Array<GravityObject> gos) {
         gravityObjects = gos;
@@ -26,11 +18,7 @@ public class GravitySystem {
         gravityObjects.add(o);
     }
 
-    public GravityObject get(int i) {
-        return gravityObjects.get(i);
-    }
-
-    public void applyGravity(float x, float y, float m) {
+    void applyGravity(float x, float y, float m) {
         for (GravityObject o : gravityObjects) {
             if (!o.contains(x, y)) {
                 o.applyGravity(x, y, m);
@@ -38,7 +26,7 @@ public class GravitySystem {
         }
     }
 
-    public Array<GravityObject> getObjects() {
+    Array<GravityObject> getObjects() {
         return gravityObjects;
     }
 
@@ -60,11 +48,11 @@ public class GravitySystem {
         return world;
     }
 
-    public World get2DWorld() {
+    World get2DWorld() {
         return world.getWorld();
     }
 
-    public void reset() {
+    void reset() {
         for (GravityObject o: gravityObjects) {
             o.destroy();
         }

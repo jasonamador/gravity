@@ -10,22 +10,20 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import java.util.Random;
 
-/**
- * Created by jason on 3/20/17.
- */
 public class GravityObject {
-    protected GravitySystem system;
-    protected Sprite ball;
-    protected Sprite arrow;
+    GravitySystem system;
+    private Sprite ball;
+    private Sprite arrow;
     protected Body body;
-    protected Fixture fixture;
-    protected Vector2 netForce, singleForce;
-    protected float radius;
-    protected float newMass;
-    protected float growRate;
+    private Fixture fixture;
+    private Vector2 singleForce;
+    Vector2 netForce;
+    float radius;
+    float newMass;
+    private float growRate;
     protected Circle bounds;
-    public boolean growing = false;
-    public boolean shrinking = false;
+    boolean growing = false;
+    boolean shrinking = false;
     public boolean active = true;
 
     public GravityObject(GravitySystem system, Vector2 position, float mass, Color color) {
@@ -72,9 +70,6 @@ public class GravityObject {
     public void update() {
         body.applyForceToCenter(netForce, true);
         bounds.setPosition(body.getPosition());
-        if (netForce.len2() / body.getMass() > system.maxAccel) {
-            netForce.setLength2(body.getMass() * system.maxAccel);
-        }
         if(growing) {
             if (body.getMass() < newMass)
                 grow();
@@ -108,7 +103,7 @@ public class GravityObject {
     }
 
     //this should probably be a GravitySystem method
-    public void destroy() {
+    void destroy() {
         active = false;
         shrinking = false;
         body.destroyFixture(fixture);
@@ -116,7 +111,7 @@ public class GravityObject {
         system.getWorld().getWorld().destroyBody(body);
     }
 
-    public void applyGravity(float x, float y, float m) {
+    void applyGravity(float x, float y, float m) {
         singleForce.set(x, y);
         singleForce.sub(body.getPosition());
         if (singleForce.len() > 1)
@@ -124,7 +119,7 @@ public class GravityObject {
         netForce.add(singleForce);
     }
 
-    public float getMass() {
+    float getMass() {
         return body.getMass();
     }
 
@@ -132,11 +127,11 @@ public class GravityObject {
         return body.getPosition();
     }
 
-    public boolean contains(float x, float y) {
+    boolean contains(float x, float y) {
         return bounds.contains(x, y);
     }
 
-    public void startGrow(float m) {
+    void startGrow(float m) {
         growing = true;
         shrinking = false;
         newMass = m;
@@ -144,13 +139,13 @@ public class GravityObject {
         growRate = (newRadius - radius) / (60 * system.growTime);
     }
 
-    public void startShrink() {
+    void startShrink() {
         shrinking = true;
         growing = false;
         growRate = radius / (60 * system.growTime);
     }
 
-    protected void grow() {
+    void grow() {
         radius += growRate;
         fixture.getShape().setRadius(radius);
         bounds.setRadius(radius);
@@ -161,7 +156,7 @@ public class GravityObject {
         arrow.setOriginCenter();
     }
 
-    protected void shrink() {
+    void shrink() {
         radius -= growRate;
         fixture.getShape().setRadius(radius);
         bounds.setRadius(radius);

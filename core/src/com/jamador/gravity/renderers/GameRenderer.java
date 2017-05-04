@@ -11,11 +11,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.jamador.gravity.models.GameWorld;
 import com.jamador.gravity.models.GravityObject;
-import com.jamador.gravity.models.Player;
 
-/**
- * Created by jason on 3/21/17.
- */
 public class GameRenderer {
     private GameWorld world;
     private OrthographicCamera camera;

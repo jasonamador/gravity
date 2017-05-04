@@ -4,15 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jamador.gravity.GravityGame;
 import com.jamador.gravity.models.GameWorld;
 import com.jamador.gravity.renderers.GameRenderer;
 
-/**
- * Created by jason on 3/19/17.
- */
 public class GameScreen implements Screen, InputProcessor {
     private GravityGame game;
     private GameWorld gameWorld;

@@ -1,37 +1,23 @@
 package com.jamador.gravity.models;
 
+import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 
-
-import java.util.Random;
-
-import static com.badlogic.gdx.physics.box2d.BodyDef.BodyType.DynamicBody;
-
-/**
- * Created by jason on 3/21/17.
- */
 public class GameWorld {
     private World world;
     private GravitySystem gravitySystem;
     private Array<Sprite> stars;
     private Player player;
-    private float playerMass = 500;
-    private SpriteBatch batch;
     private float power = 100;
     private int score;
     private float timestep = 1/60f;
-
-    /*
-    controller
-     */
     public boolean touchDown;
     public Vector3 mousePosition;
 
@@ -165,10 +151,6 @@ public class GameWorld {
         world.step(timestep, 6, 2);
     }
 
-    public void increaseTimestep() {
-        timestep += 1/60f;
-    }
-
     public void gameOver() {
         System.out.println("gameOver called");
         Random r = new Random();
@@ -188,10 +170,13 @@ public class GameWorld {
         System.out.println("post player add");
     }
 
-    public Player getPlayer() {
-        return player;
+    public void increaseTimestep() {
+        timestep += 1/60f;
     }
 
+    /*
+    getters
+     */
     public Array<GravityObject> getGravityObjects() {
         return gravitySystem.getObjects();
     }
