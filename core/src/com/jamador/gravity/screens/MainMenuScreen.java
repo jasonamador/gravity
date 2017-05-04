@@ -28,7 +28,7 @@ public class MainMenuScreen implements Screen, InputProcessor {
 
     private SpriteBatch batch;
     private Sprite ball;
-    private BitmapFont font;
+    private BitmapFont font100, font75, font50, font35, font25, font20;
     private SpriteBatch textRenderer;
 
     public MainMenuScreen(GravityGame game) {
@@ -47,7 +47,12 @@ public class MainMenuScreen implements Screen, InputProcessor {
         /*
         text
          */
-        font = new BitmapFont(Gdx.files.internal("font0.fnt"), Gdx.files.internal("font0.png"), false);
+        font20 = new BitmapFont(Gdx.files.internal("font5.fnt"), Gdx.files.internal("font5.png"), false);
+        font25 = new BitmapFont(Gdx.files.internal("font4.fnt"), Gdx.files.internal("font4.png"), false);
+        font35 = new BitmapFont(Gdx.files.internal("font3.fnt"), Gdx.files.internal("font3.png"), false);
+        font50 = new BitmapFont(Gdx.files.internal("font2.fnt"), Gdx.files.internal("font2.png"), false);
+        font75 = new BitmapFont(Gdx.files.internal("font1.fnt"), Gdx.files.internal("font1.png"), false);
+        font100 = new BitmapFont(Gdx.files.internal("font0.fnt"), Gdx.files.internal("font0.png"), false);
         textRenderer = new SpriteBatch();
     }
 
@@ -63,18 +68,13 @@ public class MainMenuScreen implements Screen, InputProcessor {
     @Override
     public void render(float delta) {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        /*
-        batch.begin();
-        ball.draw(batch);
-        batch.end();
-        */
 
         /*
         text
          */
         textRenderer.begin();
-        GlyphLayout layout = new GlyphLayout(font, "GRAVITY");
-        font.draw(textRenderer, "GRAVITY", (screenWidth / 2) - (layout.width / 2), (screenHeight / 2) - (layout.height / 2));
+        GlyphLayout layout = new GlyphLayout(font100, "GRAVITY");
+        font100.draw(textRenderer, "GRAVITY", (screenWidth / 2) - (layout.width / 2), (screenHeight / 2) + (layout.height / 2));
         textRenderer.end();
     }
 

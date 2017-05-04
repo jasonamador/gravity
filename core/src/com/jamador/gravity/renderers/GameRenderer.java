@@ -23,7 +23,7 @@ public class GameRenderer {
     private Array<GravityObject> gravityObjects;
     private Array<Sprite> stars;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
-    private BitmapFont font;
+    private BitmapFont font100, font75, font50, font35, font25, font20;
     private SpriteBatch textRenderer;
     private int screenWidth, screenHeight;
     private Sprite touchpoint;
@@ -49,7 +49,12 @@ public class GameRenderer {
         /*
         text
          */
-        font = new BitmapFont(Gdx.files.internal("font0.fnt"), Gdx.files.internal("font0.png"), false);
+        font20 = new BitmapFont(Gdx.files.internal("font5.fnt"), Gdx.files.internal("font5.png"), false);
+        font25 = new BitmapFont(Gdx.files.internal("font4.fnt"), Gdx.files.internal("font4.png"), false);
+        font35 = new BitmapFont(Gdx.files.internal("font3.fnt"), Gdx.files.internal("font3.png"), false);
+        font50 = new BitmapFont(Gdx.files.internal("font2.fnt"), Gdx.files.internal("font2.png"), false);
+        font75 = new BitmapFont(Gdx.files.internal("font1.fnt"), Gdx.files.internal("font1.png"), false);
+        font100 = new BitmapFont(Gdx.files.internal("font0.fnt"), Gdx.files.internal("font0.png"), false);
         textRenderer = new SpriteBatch();
 
         /*
@@ -123,8 +128,8 @@ public class GameRenderer {
         score
          */
         textRenderer.begin();
-        font.draw(textRenderer, "SCORE: " + world.getScore(), 10, screenHeight - 30);
-        font.draw(textRenderer, "POWER " + world.getPower(), 10, screenHeight - 60);
+        font50.draw(textRenderer, "SCORE: " + world.getScore(), 10, screenHeight - 30);
+        font50.draw(textRenderer, "POWER " + world.getPower(), 10, screenHeight - 60);
         textRenderer.end();
 
         /*

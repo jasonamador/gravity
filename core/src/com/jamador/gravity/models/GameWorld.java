@@ -47,6 +47,9 @@ public class GameWorld {
                         a.startGrow(b.getMass() + a.getMass());
                         b.startShrink();
                     } else {
+                        if (b.equals(player)) {
+                            score += 10 * a.getMass();
+                        }
                         b.startGrow(a.getMass() + b.getMass());
                         a.startShrink();
                     }
