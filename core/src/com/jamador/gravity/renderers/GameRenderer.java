@@ -89,7 +89,7 @@ public class GameRenderer {
         /*
         box2d debug
          */
-        debugRenderer.render(world.getWorld(), camera.combined);
+        //debugRenderer.render(world.getWorld(), camera.combined);
     }
 
     public OrthographicCamera getCamera() {

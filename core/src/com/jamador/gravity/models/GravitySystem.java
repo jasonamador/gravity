@@ -31,6 +31,9 @@ public class GravitySystem {
     }
 
     public void update() {
+        if (gravityObjects.size == 1 && gravityObjects.contains(world.getPlayer(), true)) {
+            world.win();
+        }
         for (int i = 0; i < gravityObjects.size; i++)
             for (int j = i; j < gravityObjects.size; j++) {
                 gravityObjects.get(i).applyGravity(gravityObjects.get(j).getPosition().x, gravityObjects.get(j).getPosition().y, gravityObjects.get(j).getMass());

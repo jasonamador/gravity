@@ -173,6 +173,25 @@ public class GameWorld {
         System.out.println("post player add");
     }
 
+    void win() {
+        System.out.println("win called");
+        Random r = new Random();
+        gravitySystem.reset();
+        System.out.println("post gsystem reset");
+        power = 100;
+        timestep = 1/60f;
+        for (int x=0; x<15; x++) {
+            gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
+                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
+        }
+        System.out.println("post gsystem creation");
+        player = new Player(gravitySystem, new Vector2(80, 50), 35f);
+        System.out.println("post player creation");
+        gravitySystem.add(player);
+        System.out.println("post player add");
+
+    }
+
     public void increaseTimestep() {
         timestep += 1/60f;
     }
@@ -180,6 +199,10 @@ public class GameWorld {
     /*
     getters
      */
+    Player getPlayer() {
+        return player;
+    }
+
     public Array<GravityObject> getGravityObjects() {
         return gravitySystem.getObjects();
     }
