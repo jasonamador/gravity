@@ -3,6 +3,7 @@ package com.jamador.gravity.renderers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,6 +24,7 @@ public class GameRenderer {
     private BitmapFont font;
     private SpriteBatch textRenderer;
     private int screenWidth, screenHeight;
+    private Sprite touchpoint;
 
     public GameRenderer(GameWorld world) {
         screenWidth = Gdx.graphics.getWidth();
@@ -48,6 +50,13 @@ public class GameRenderer {
          */
         font = new BitmapFont(Gdx.files.internal("font0.fnt"), Gdx.files.internal("font0.png"), false);
         textRenderer = new SpriteBatch();
+
+        /*
+        sprites
+         */
+        touchpoint = new Sprite(new Texture(Gdx.files.internal("touchpoint.png")));
+        touchpoint.setSize(15, 15);
+        touchpoint.setOriginCenter();
     }
 
     public void render() {
@@ -70,9 +79,23 @@ public class GameRenderer {
          */
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        /*
+        stars
+         */
         for (Sprite s : stars) {
             s.draw(batch);
         }
+        /*
+        touchdown
+         */
+        if (world.touchDown) {
+            touchpoint.setCenter(world.mousePosition.x, world.mousePosition.y);
+            touchpoint.setRotation(touchpoint.getRotation() + 2f);
+            touchpoint.draw(batch);
+        }
+        /*
+        objects
+         */
         for (GravityObject o : gravityObjects) {
             o.render(batch);
         }

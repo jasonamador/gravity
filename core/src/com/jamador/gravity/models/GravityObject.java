@@ -52,9 +52,6 @@ public class GravityObject {
         fd.restitution = 1.0f;
         fixture = body.createFixture(fd);
 
-        Random r = new Random();
-        body.setLinearVelocity(new Vector2(r.nextFloat() * 3, r.nextFloat() * 3));
-
         ball = new Sprite(new Texture(Gdx.files.internal("ball.png")));
         ball.setSize(radius * 2, radius * 2);
         ball.setOriginCenter();

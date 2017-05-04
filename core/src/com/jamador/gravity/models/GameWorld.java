@@ -79,7 +79,7 @@ public class GameWorld {
         /*
         bottom
          */
-        bd.position.set(new Vector2(0, 1f));
+        bd.position.set(new Vector2(0, -1f));
         Body bottomBody = world.createBody(bd);
         rect.setAsBox(160f, 1f);
         bottomBody.createFixture(rect, 1.0f);
@@ -88,7 +88,7 @@ public class GameWorld {
         /*
         top
          */
-        bd.position.set(new Vector2(0, 99f));
+        bd.position.set(new Vector2(0, 101f));
         Body topBody = world.createBody(bd);
         rect.setAsBox(160f, 1f);
         topBody.createFixture(rect, 1.0f);
@@ -97,7 +97,7 @@ public class GameWorld {
         /*
         left
          */
-        bd.position.set(new Vector2(1, 0f));
+        bd.position.set(new Vector2(-1, 0f));
         Body leftBody = world.createBody(bd);
         rect.setAsBox(1f, 160f);
         leftBody.createFixture(rect, 1.0f);
@@ -106,26 +106,38 @@ public class GameWorld {
         /*
         right
          */
-        bd.position.set(new Vector2(159, 0f));
+        bd.position.set(new Vector2(161, 0f));
         Body rightBody = world.createBody(bd);
         rect.setAsBox(1f, 160f);
         rightBody.createFixture(rect, 1.0f);
-        //rect.dispose();
+        rect.dispose();
 
         /*
         gravity system
          */
         Random r = new Random();
         gravitySystem = new GravitySystem(this, new Array<GravityObject>());
-        player = new Player(gravitySystem, new Vector2(80, 50), 35f);
 
         /*
         random
-         */
         for (int x=0; x<15; x++) {
             gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
                     r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
         }
+         */
+
+        /*
+        circle
+         */
+        for (int x=0; x<16; x++) {
+            gravitySystem.add(new GravityObject(gravitySystem,
+                            new Vector2(
+                                    80 + (30 * (float)Math.cos(x * 2 * Math.PI / 16)),
+                                    50 + (30 * (float)Math.sin(x * 2 * Math.PI / 16))),
+                    10f, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
+        }
+
+        player = new Player(gravitySystem, new Vector2(80, 50), 30f);
         gravitySystem.add(player);
 
         /*
