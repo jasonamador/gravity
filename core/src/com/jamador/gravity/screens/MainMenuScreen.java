@@ -18,18 +18,15 @@ gravity
  */
 import com.jamador.gravity.GravityGame;
 
-/**
- * Created by jason on 3/19/17.
- */
 public class MainMenuScreen implements Screen, InputProcessor {
-    final GravityGame game;
+    private GravityGame game;
 
     private int screenWidth, screenHeight;
 
-    private SpriteBatch batch;
     private Sprite ball;
     private BitmapFont font100, font75, font50, font35, font25, font20;
     private SpriteBatch textRenderer;
+    private SpriteBatch imageRenderer;
 
     public MainMenuScreen(GravityGame game) {
         /*
@@ -38,11 +35,10 @@ public class MainMenuScreen implements Screen, InputProcessor {
         this.game = game;
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
-        Gdx.input.setInputProcessor(this);
-        Gdx.input.setCatchBackKey(true);
         ball = new Sprite(new Texture(Gdx.files.internal("ball.png")));
         ball.setCenter(screenWidth / 2, screenHeight / 2);
-        batch = new SpriteBatch();
+
+        imageRenderer = new SpriteBatch();
 
         /*
         text
@@ -63,6 +59,8 @@ public class MainMenuScreen implements Screen, InputProcessor {
     public void show() {
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
+        Gdx.input.setInputProcessor(this);
+        Gdx.input.setCatchBackKey(true);
     }
 
     @Override
@@ -90,7 +88,8 @@ public class MainMenuScreen implements Screen, InputProcessor {
 
     @Override
     public void resume() {
-
+        Gdx.input.setInputProcessor(this);
+        Gdx.input.setCatchBackKey(true);
     }
 
     @Override
@@ -123,9 +122,8 @@ public class MainMenuScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (ball.getBoundingRectangle().contains(screenX, screenY)) {
-            game.setScreen(new GameScreen(game));
-        }
+        game.setScreen(game.gameScreen);
+
         return false;
     }
 

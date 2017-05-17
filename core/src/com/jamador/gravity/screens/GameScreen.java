@@ -17,7 +17,6 @@ public class GameScreen implements Screen, InputProcessor {
         this.game = game;
         gameWorld = new GameWorld();
         gameRenderer = new GameRenderer(gameWorld);
-        Gdx.input.setInputProcessor(this);
     }
 
     /*
@@ -25,6 +24,8 @@ public class GameScreen implements Screen, InputProcessor {
      */
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(this);
+        Gdx.input.setCatchBackKey(true);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void resume() {
-
+        Gdx.input.setInputProcessor(this);
     }
 
     @Override
@@ -64,10 +65,15 @@ public class GameScreen implements Screen, InputProcessor {
      */
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK)
+        if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
             gameWorld.gameOver();
+            game.setScreen(game.menuScreen);
+        }
         if (keycode == Input.Keys.PLUS) {
             gameWorld.increaseTimestep();
+        }
+        if (keycode == Input.Keys.MINUS) {
+            gameWorld.decreaseTimestep();
         }
         return false;
     }

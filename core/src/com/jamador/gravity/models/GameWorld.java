@@ -193,6 +193,10 @@ public class GameWorld {
         timestep += 1/60f;
     }
 
+    public void decreaseTimestep() {
+        timestep -= 1/60f;
+    }
+
     /*
     getters
      */
