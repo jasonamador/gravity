@@ -39,7 +39,7 @@ public class GravityObject {
          */
         sound = Gdx.audio.newSound(Gdx.files.internal("sound.wav"));
         frequency = 1000 - (radius * 100);
-        soundId = sound.loop(0.3f);
+        soundId = sound.loop(0.4f);
 
         /*
         bounds
@@ -93,7 +93,9 @@ public class GravityObject {
         }
 
         frequency = 1000 - (radius * 100);
-        sound.setPitch(soundId, frequency / 500 - 1);
+        sound.setPitch(soundId, frequency / 500 - 1 + 0.01f);
+        sound.setPan(soundId, body.getPosition().x / 80 - 80, 0.4f);
+        System.out.println(frequency);
     }
 
     public void render(SpriteBatch batch) {
