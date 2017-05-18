@@ -3,10 +3,8 @@ package com.jamador.gravity.screens;
 /*
 gdx
  */
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -19,24 +17,25 @@ gravity
  */
 import com.jamador.gravity.GravityGame;
 
-public class MainMenuScreen implements Screen, InputProcessor {
+public class TestScreen implements Screen, InputProcessor {
     private GravityGame game;
 
     private int screenWidth, screenHeight;
 
-    private Sprite ball;
     private BitmapFont font100, font75, font50, font35, font25, font20;
     private SpriteBatch textRenderer;
     private SpriteBatch imageRenderer;
 
-    public MainMenuScreen(GravityGame game) {
+    private Sound sound;
+    private double theta = 0;
+
+    public TestScreen(GravityGame game) {
         this.game = game;
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
-        ball = new Sprite(new Texture(Gdx.files.internal("ball.png")));
-        ball.setCenter(screenWidth / 2, screenHeight / 2);
 
         imageRenderer = new SpriteBatch();
+        sound = Gdx.audio.newSound(Gdx.files.internal("sound.wav"));
 
         /*
         text
@@ -59,6 +58,7 @@ public class MainMenuScreen implements Screen, InputProcessor {
         screenHeight = Gdx.graphics.getHeight();
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
+        sound.loop();
     }
 
     @Override
@@ -69,9 +69,11 @@ public class MainMenuScreen implements Screen, InputProcessor {
         text
          */
         textRenderer.begin();
-        GlyphLayout layout = new GlyphLayout(font100, "GRAVITY");
-        font100.draw(textRenderer, "GRAVITY", (screenWidth / 2) - (layout.width / 2), (screenHeight / 2) + (layout.height / 2));
+        GlyphLayout layout = new GlyphLayout(font100, "Test");
+        font100.draw(textRenderer, "Test", (screenWidth / 2) - (layout.width / 2), (screenHeight / 2) + (layout.height / 2));
         textRenderer.end();
+        theta += 0.04f;
+        sound.setPitch(0, (float)Math.sin(theta) * 2 + 2);
     }
 
     @Override
@@ -92,7 +94,7 @@ public class MainMenuScreen implements Screen, InputProcessor {
 
     @Override
     public void hide() {
-
+        sound.pause();
     }
 
     @Override
@@ -105,8 +107,8 @@ public class MainMenuScreen implements Screen, InputProcessor {
      */
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.T) {
-            game.setScreen(game.testScreen);
+        if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
+            game.setScreen(game.menuScreen);
         }
         return false;
     }
@@ -123,7 +125,6 @@ public class MainMenuScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        game.setScreen(game.gameScreen);
 
         return false;
     }
@@ -148,3 +149,4 @@ public class MainMenuScreen implements Screen, InputProcessor {
         return false;
     }
 }
+
