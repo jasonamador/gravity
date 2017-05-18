@@ -1,6 +1,7 @@
 package com.jamador.gravity.models;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -17,6 +18,9 @@ public class GravityObject {
     protected Body body;
     private Fixture fixture;
     private Vector2 singleForce;
+    private Sound sound;
+    private long soundId;
+    private float frequency;
     Vector2 netForce;
     float radius;
     float newMass;
@@ -29,6 +33,13 @@ public class GravityObject {
     public GravityObject(GravitySystem system, Vector2 position, float mass, Color color) {
         this.system = system;
         radius = (float) Math.sqrt(mass / Math.PI);
+
+        /*
+        sound
+         */
+        sound = Gdx.audio.newSound(Gdx.files.internal("sound.wav"));
+        frequency = 1000 - (radius * 100);
+        soundId = sound.loop(0.3f);
 
         /*
         bounds
@@ -80,6 +91,9 @@ public class GravityObject {
                 destroy();
             }
         }
+
+        frequency = 1000 - (radius * 100);
+        sound.setPitch(soundId, frequency / 500 - 1);
     }
 
     public void render(SpriteBatch batch) {
@@ -106,6 +120,7 @@ public class GravityObject {
         body.destroyFixture(fixture);
         // make a new getter for this
         system.getWorld().getWorld().destroyBody(body);
+        sound.stop(soundId);
     }
 
     void applyGravity(float x, float y, float m) {
