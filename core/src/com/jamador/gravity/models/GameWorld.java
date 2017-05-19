@@ -117,29 +117,6 @@ public class GameWorld {
          */
         Random r = new Random();
         gravitySystem = new GravitySystem(this, new Array<GravityObject>());
-
-        /*
-        random
-        for (int x=0; x<15; x++) {
-            gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
-                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
-        }
-         */
-
-        /*
-        circle
-         */
-        for (int x=0; x<16; x++) {
-            gravitySystem.add(new GravityObject(gravitySystem,
-                            new Vector2(
-                                    80 + (30 * (float)Math.cos(x * 2 * Math.PI / 16)),
-                                    50 + (30 * (float)Math.sin(x * 2 * Math.PI / 16))),
-                    10f, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
-        }
-
-        player = new Player(gravitySystem, new Vector2(80, 50), 30f);
-        gravitySystem.add(player);
-
     }
 
     public void update() {
@@ -195,6 +172,35 @@ public class GameWorld {
 
     public void decreaseTimestep() {
         timestep -= 1/60f;
+    }
+
+    public void initialize() {
+
+        /*
+        random
+        for (int x=0; x<15; x++) {
+            gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
+                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
+        }
+         */
+
+        /*
+        circle
+         */
+        Random r = new Random();
+
+        for (int x=0; x<16; x++) {
+            gravitySystem.add(new GravityObject(gravitySystem,
+                    new Vector2(
+                            80 + (30 * (float)Math.cos(x * 2 * Math.PI / 16)),
+                            50 + (30 * (float)Math.sin(x * 2 * Math.PI / 16))),
+                    10f, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
+        }
+
+        player = new Player(gravitySystem, new Vector2(80, 50), 30f);
+        gravitySystem.add(player);
+
+
     }
 
     /*

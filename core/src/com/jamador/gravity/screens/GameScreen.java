@@ -26,6 +26,7 @@ public class GameScreen implements Screen, InputProcessor {
     public void show() {
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
+        gameWorld.initialize();
     }
 
     @Override
