@@ -25,13 +25,9 @@ public class Player extends GravityObject{
                 system.getWorld().gameOver();
             }
         }
-        /*
-        max velocity logic
-        if (body.getLinearVelocity().len2() >= system.maxVelocity) {
-            Vector2 newVelocity = body.getLinearVelocity();
-            newVelocity.setLength2(system.maxVelocity);
-            body.setLinearVelocity(newVelocity);
-        }
-         */
+
+        frequency = 1000 - (radius * 100);
+        sound.setPitch(soundId, frequency / 500 - 1 + 0.1f);
+        sound.setPan(soundId, body.getPosition().x / 80 - 80, 0.4f);
     }
 }

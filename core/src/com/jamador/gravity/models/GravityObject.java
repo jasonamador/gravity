@@ -18,9 +18,9 @@ public class GravityObject {
     protected Body body;
     private Fixture fixture;
     private Vector2 singleForce;
-    private Sound sound;
-    private long soundId;
-    private float frequency;
+    Sound sound;
+    long soundId;
+    float frequency;
     Vector2 netForce;
     float radius;
     float newMass;
@@ -93,9 +93,8 @@ public class GravityObject {
         }
 
         frequency = 1000 - (radius * 100);
-        sound.setPitch(soundId, frequency / 500 - 1 + 0.01f);
+        sound.setPitch(soundId, frequency / 500 - 1 + 0.1f);
         sound.setPan(soundId, body.getPosition().x / 80 - 80, 0.4f);
-        System.out.println(frequency);
     }
 
     public void render(SpriteBatch batch) {
