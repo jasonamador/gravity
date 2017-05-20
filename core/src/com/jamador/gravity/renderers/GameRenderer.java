@@ -129,7 +129,7 @@ public class GameRenderer {
          */
         textRenderer.begin();
         font50.draw(textRenderer, "SCORE: " + world.getScore(), 10, screenHeight - 30);
-        font50.draw(textRenderer, "POWER " + (int)world.getPower() + "%", 10, screenHeight - 60);
+        font50.draw(textRenderer, "POWER " + world.getPower(), 10, screenHeight - 60);
         textRenderer.end();
 
         /*
