@@ -9,11 +9,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
+
 import java.util.Random;
 
 public class GravityObject {
     GravitySystem system;
     private Sprite ball;
+    private Array<Sprite> path;
     private Sprite arrow;
     protected Body body;
     private Fixture fixture;
@@ -29,6 +32,7 @@ public class GravityObject {
     boolean growing = false;
     boolean shrinking = false;
     public boolean active = true;
+    private long lifetime = 0;
 
     public GravityObject(GravitySystem system, Vector2 position, float mass, Color color) {
         this.system = system;
@@ -63,6 +67,9 @@ public class GravityObject {
         fd.restitution = 1.0f;
         fixture = body.createFixture(fd);
 
+        /*
+        sprites
+         */
         ball = new Sprite(new Texture(Gdx.files.internal("ball.png")));
         ball.setSize(radius * 2, radius * 2);
         ball.setOriginCenter();
@@ -70,6 +77,7 @@ public class GravityObject {
         arrow = new Sprite(new Texture(Gdx.files.internal("arrow.png")));
         arrow.setSize(radius * 2, radius * 2);
         arrow.setOriginCenter();
+        path = new Array<Sprite>();
 
         netForce = new Vector2();
         singleForce = new Vector2();
@@ -92,13 +100,47 @@ public class GravityObject {
             }
         }
 
+        /*
+        path
+         */
+        lifetime++;
+        if (lifetime % 30 == 0) {
+            path.add(new Sprite(new Texture(Gdx.files.internal("ball.png"))));
+            path.get(path.size - 1).setPosition(ball.getX(), ball.getY());
+            path.get(path.size - 1).setSize(radius * 2, radius * 2);
+            path.get(path.size - 1).setColor(0.1f, 0.9f,1.0f, 1);
+        }
+        if (path.size > 10) {
+            path.pop();
+            path.add(new Sprite(new Texture(Gdx.files.internal("ball.png"))));
+            path.get(path.size - 1).setPosition(ball.getX(), ball.getY());
+            path.get(path.size - 1).setSize(ball.getWidth(), ball.getHeight());
+            path.get(path.size - 1).setColor(0.1f, 0.9f,1.0f, 1);
+        }
+        /*
+        path.get(path.size - 1).setSize(path.get(path.size - 1).getWidth() * 0.8f, path.get(path.size - 1).getHeight() * 0.8f);
+        */
+
+
+        /*
+        sound
+         */
         frequency = 1000 - (radius * 100);
         sound.setPitch(soundId, frequency / 500 - 1 + 0.1f);
         sound.setPan(soundId, body.getPosition().x / 80 - 80, 0.4f);
     }
 
     public void render(SpriteBatch batch) {
-        /*renderer*/
+        /*
+        path
+         */
+        for (Sprite s: path) {
+            s.draw(batch);
+        }
+
+        /*
+        ball
+         */
         ball.setRotation(body.getAngle() * 57.3f);
         ball.setCenter(body.getPosition().x, body.getPosition().y);
         ball.draw(batch);
@@ -106,20 +148,22 @@ public class GravityObject {
             arrow.setRotation(netForce.angle() + 45 + 180);
             arrow.setPosition(ball.getX(), ball.getY());
         }
+
         /*
-        float alpha = netForce.len2() / maxForceFactor;
-        arrow.setAlpha(alpha > 1 ? 1 : alpha);
-        */
+        arrow
+         */
         arrow.draw(batch);
+
         netForce.set(0,0);
     }
 
-    //this should probably be a GravitySystem method
     void destroy() {
         active = false;
         shrinking = false;
         body.destroyFixture(fixture);
-        // make a new getter for this
+        /*
+        make new getter for this stupid call
+         */
         system.getWorld().getWorld().destroyBody(body);
         sound.stop(soundId);
     }

@@ -88,7 +88,6 @@ public class GameRenderer {
 
         /*
         shape renderer
-         */
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin();
         for (int i = 0; i < gravityObjects.size; i++)
@@ -96,6 +95,7 @@ public class GameRenderer {
                 shapeRenderer.line(gravityObjects.get(i).getPosition().x, gravityObjects.get(i).getPosition().y, gravityObjects.get(j).getPosition().x, gravityObjects.get(j).getPosition().y);
             }
         shapeRenderer.end();
+         */
 
         /*
         sprite batch
@@ -104,10 +104,10 @@ public class GameRenderer {
         batch.begin();
         /*
         stars
-         */
         for (Sprite s : stars) {
             s.draw(batch);
         }
+         */
         /*
         touchdown
          */
