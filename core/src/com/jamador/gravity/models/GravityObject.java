@@ -17,6 +17,7 @@ public class GravityObject {
     GravitySystem system;
     private Sprite ball;
     private Array<Sprite> path;
+    private Texture pathTexture;
     private Sprite arrow;
     protected Body body;
     private Fixture fixture;
@@ -78,6 +79,7 @@ public class GravityObject {
         arrow.setSize(radius * 2, radius * 2);
         arrow.setOriginCenter();
         path = new Array<Sprite>();
+        pathTexture = new Texture(Gdx.files.internal("ball.png"));
 
         netForce = new Vector2();
         singleForce = new Vector2();
@@ -104,23 +106,21 @@ public class GravityObject {
         path
          */
         lifetime++;
-        if (lifetime % 30 == 0) {
-            path.add(new Sprite(new Texture(Gdx.files.internal("ball.png"))));
-            path.get(path.size - 1).setPosition(ball.getX(), ball.getY());
-            path.get(path.size - 1).setSize(radius * 2, radius * 2);
-            path.get(path.size - 1).setColor(0.1f, 0.9f,1.0f, 1);
-        }
         if (path.size > 10) {
-            path.pop();
-            path.add(new Sprite(new Texture(Gdx.files.internal("ball.png"))));
-            path.get(path.size - 1).setPosition(ball.getX(), ball.getY());
-            path.get(path.size - 1).setSize(ball.getWidth(), ball.getHeight());
-            path.get(path.size - 1).setColor(0.1f, 0.9f,1.0f, 1);
+            path.removeIndex(0);
         }
-        /*
-        path.get(path.size - 1).setSize(path.get(path.size - 1).getWidth() * 0.8f, path.get(path.size - 1).getHeight() * 0.8f);
-        */
-
+        if (lifetime % 30 == 0) {
+            lifetime = 0;
+            path.add(new Sprite(pathTexture));
+            path.peek().setPosition(ball.getX(), ball.getY());
+            path.peek().setSize(radius * 2, radius * 2);
+            path.peek().setOriginCenter();
+            path.peek().setColor(0.1f, 0.9f,1.0f, 1);
+        }
+        for (Sprite s: path) {
+            s.setSize(s.getWidth() * .99f, s.getHeight() * .99f);
+            s.setOriginCenter();
+        }
 
         /*
         sound
