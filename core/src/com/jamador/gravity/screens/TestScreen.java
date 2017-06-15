@@ -3,19 +3,22 @@ package com.jamador.gravity.screens;
 /*
 gdx
  */
-import com.badlogic.gdx.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /*
 gravity
  */
+import com.badlogic.gdx.math.Vector2;
 import com.jamador.gravity.GravityGame;
+import com.jamador.gravity.models.TextSprite;
 
 public class TestScreen implements Screen, InputProcessor {
     private GravityGame game;
@@ -25,8 +28,8 @@ public class TestScreen implements Screen, InputProcessor {
     private BitmapFont font100, font75, font50, font35, font25, font20;
     private SpriteBatch textRenderer;
     private SpriteBatch imageRenderer;
+    private TextSprite textSprite;
 
-    private Sound sound;
     private double theta = 0;
 
     public TestScreen(GravityGame game) {
@@ -35,7 +38,6 @@ public class TestScreen implements Screen, InputProcessor {
         screenHeight = Gdx.graphics.getHeight();
 
         imageRenderer = new SpriteBatch();
-        sound = Gdx.audio.newSound(Gdx.files.internal("sound.wav"));
 
         /*
         text
@@ -47,6 +49,11 @@ public class TestScreen implements Screen, InputProcessor {
         font75 = new BitmapFont(Gdx.files.internal("font1.fnt"), Gdx.files.internal("font1.png"), false);
         font100 = new BitmapFont(Gdx.files.internal("font0.fnt"), Gdx.files.internal("font0.png"), false);
         textRenderer = new SpriteBatch();
+
+        /*
+        text sprite
+         */
+        textSprite = new TextSprite("Testing", font100, new Vector2(screenWidth / 2, screenHeight / 2));
     }
 
     /*
@@ -58,7 +65,6 @@ public class TestScreen implements Screen, InputProcessor {
         screenHeight = Gdx.graphics.getHeight();
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
-        sound.loop();
     }
 
     @Override
@@ -69,11 +75,9 @@ public class TestScreen implements Screen, InputProcessor {
         text
          */
         textRenderer.begin();
-        GlyphLayout layout = new GlyphLayout(font100, "Test");
-        font100.draw(textRenderer, "Test", (screenWidth / 2) - (layout.width / 2), (screenHeight / 2) + (layout.height / 2));
+        textSprite.draw(textRenderer);
         textRenderer.end();
         theta += 0.04f;
-        sound.setPitch(0, (float)Math.sin(theta) * 2 + 2);
     }
 
     @Override
@@ -94,7 +98,6 @@ public class TestScreen implements Screen, InputProcessor {
 
     @Override
     public void hide() {
-        sound.pause();
     }
 
     @Override
@@ -125,6 +128,9 @@ public class TestScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (textSprite.contains(new Vector2(screenX, screenY))) {
+            System.out.println("touched test");
+        }
 
         return false;
     }

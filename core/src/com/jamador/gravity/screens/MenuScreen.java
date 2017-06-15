@@ -19,24 +19,18 @@ gravity
  */
 import com.jamador.gravity.GravityGame;
 
-public class MainMenuScreen implements Screen, InputProcessor {
+public class MenuScreen implements Screen, InputProcessor {
     private GravityGame game;
 
     private int screenWidth, screenHeight;
 
-    private Sprite ball;
     private BitmapFont font100, font75, font50, font35, font25, font20;
     private SpriteBatch textRenderer;
-    private SpriteBatch imageRenderer;
 
-    public MainMenuScreen(GravityGame game) {
+    public MenuScreen(GravityGame game) {
         this.game = game;
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
-        ball = new Sprite(new Texture(Gdx.files.internal("ball.png")));
-        ball.setCenter(screenWidth / 2, screenHeight / 2);
-
-        imageRenderer = new SpriteBatch();
 
         /*
         text
