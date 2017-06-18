@@ -11,13 +11,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.jamador.gravity.GravityGame;
 
 public class TestScreen implements Screen, InputProcessor {
-    private GravityGame game;
+    GravityGame game;
     private InputMultiplexer inputMultiplexer;
 
     private int screenWidth, screenHeight;
@@ -36,7 +38,7 @@ public class TestScreen implements Screen, InputProcessor {
     Sprite ball;
 
 
-    public TestScreen(GravityGame game) {
+    public TestScreen(final GravityGame game) {
         this.game = game;
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
@@ -57,14 +59,33 @@ public class TestScreen implements Screen, InputProcessor {
         scene2d
          */
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
-        TextButton start = new TextButton("Start", skin, "default");
-        start.addListener(new ChangeListener() {
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        TextButton startButton = new TextButton("Start", skin, "default");
+        TextButton settingsButton = new TextButton("Settings", skin, "default");
+        TextButton quitButton = new TextButton("Quit", skin, "default");
+        startButton.addListener(new ChangeListener() {
             public void changed(ChangeEvent e, Actor a) {
-                System.out.println("Clicked");
+                game.setScreen(game.gameScreen);
             }
         });
-        stage.addActor(start);
+        settingsButton.addListener(new ChangeListener() {
+            public void changed(ChangeEvent e, Actor a) {
+                System.out.println("Settings");
+            }
+        });
+        quitButton.addListener(new ChangeListener() {
+            public void changed(ChangeEvent e, Actor a) {
+                Gdx.app.exit();
+            }
+        });
+        Table table = new Table();
+        table.setFillParent(true);
+        table.add(startButton).fillX().space(10);
+        table.row();
+        table.add(settingsButton).fillX().space(10);
+        table.row();
+        table.add(quitButton).fillX().space(10);
+        stage.addActor(table);
 
         inputMultiplexer = new InputMultiplexer(stage, this);
         Gdx.input.setInputProcessor(inputMultiplexer);
@@ -118,7 +139,6 @@ public class TestScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-
     }
 
     /*
