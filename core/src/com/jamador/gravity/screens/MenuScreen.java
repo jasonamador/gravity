@@ -25,8 +25,7 @@ public class MenuScreen implements Screen, InputProcessor {
     /*
     Scene2D.UI
      */
-    Skin skin;
-    Stage stage;
+    private Stage stage;
 
     public MenuScreen(final GravityGame game) {
         this.game = game;
@@ -35,10 +34,14 @@ public class MenuScreen implements Screen, InputProcessor {
         scene2d
          */
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         TextButton start = new TextButton("Start", skin, "text-only");
         TextButton settings = new TextButton("Settings", skin, "text-only");
         TextButton quit = new TextButton("Quit", skin, "text-only");
+        final Window settingsWindow = new Window("Settings", skin);
+        final CheckBox sound = new CheckBox("Sound", skin, "sound");
+        settingsWindow.setFillParent(true);
+        settingsWindow.add(sound);
         start.addListener(new ChangeListener() {
             public void changed(ChangeEvent e, Actor a) {
                 game.setScreen(game.gameScreen);
@@ -46,12 +49,17 @@ public class MenuScreen implements Screen, InputProcessor {
         });
         settings.addListener(new ChangeListener() {
             public void changed(ChangeEvent e, Actor a) {
-                System.out.println("Settings");
+                stage.addActor(settingsWindow);
             }
         });
         quit.addListener(new ChangeListener() {
             public void changed(ChangeEvent e, Actor a) {
                 Gdx.app.exit();
+            }
+        });
+        sound.addListener(new ChangeListener() {
+            public void changed(ChangeEvent e, Actor a) {
+                game.soundOn = sound.isChecked();
             }
         });
         Table table = new Table();
@@ -62,6 +70,7 @@ public class MenuScreen implements Screen, InputProcessor {
         table.row();
         table.add(quit).fillX().space(10);
         stage.addActor(table);
+
     }
 
     /*

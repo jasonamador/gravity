@@ -10,16 +10,16 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-
-import java.util.Random;
+import com.jamador.gravity.GravityGame;
 
 public class GravityObject {
+    GravityGame game;
     GravitySystem system;
     private Sprite ball;
     private Array<Sprite> path;
     private Texture pathTexture;
     private Sprite arrow;
-    protected Body body;
+    Body body;
     private Fixture fixture;
     private Vector2 singleForce;
     Sound sound;
@@ -29,13 +29,13 @@ public class GravityObject {
     float radius;
     float newMass;
     private float growRate;
-    protected Circle bounds;
+    Circle bounds;
     boolean growing = false;
     boolean shrinking = false;
-    public boolean active = true;
+    boolean active = true;
     private long lifetime = 0;
 
-    public GravityObject(GravitySystem system, Vector2 position, float mass, Color color) {
+    GravityObject(GravitySystem system, Vector2 position, float mass, Color color) {
         this.system = system;
         radius = (float) Math.sqrt(mass / Math.PI);
 

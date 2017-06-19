@@ -9,6 +9,7 @@ public class GravityGame extends Game {
     public MenuScreen menuScreen;
     public GameScreen gameScreen;
     public TestScreen testScreen;
+    public boolean soundOn = true;
 
     @Override
     public void create() {
