@@ -10,10 +10,8 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.jamador.gravity.GravityGame;
 
 public class GravityObject {
-    GravityGame game;
     GravitySystem system;
     private Sprite ball;
     private Array<Sprite> path;
@@ -33,7 +31,6 @@ public class GravityObject {
     boolean growing = false;
     boolean shrinking = false;
     boolean active = true;
-    private long lifetime = 0;
 
     GravityObject(GravitySystem system, Vector2 position, float mass, Color color) {
         this.system = system;
@@ -182,7 +179,7 @@ public class GravityObject {
         return body.getMass();
     }
 
-    public Vector2 getPosition() {
+    Vector2 getPosition() {
         return body.getPosition();
     }
 

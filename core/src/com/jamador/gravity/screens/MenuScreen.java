@@ -3,10 +3,7 @@ package com.jamador.gravity.screens;
 /*
 gdx
  */
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -21,6 +18,7 @@ import com.jamador.gravity.GravityGame;
 
 public class MenuScreen implements Screen, InputProcessor {
     private GravityGame game;
+    private InputMultiplexer inputMultiplexer;
 
     /*
     Scene2D.UI
@@ -37,6 +35,7 @@ public class MenuScreen implements Screen, InputProcessor {
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         TextButton start = new TextButton("Start", skin, "text-only");
         TextButton settings = new TextButton("Settings", skin, "text-only");
+        TextButton test = new TextButton("Test", skin, "text-only");
         TextButton quit = new TextButton("Quit", skin, "text-only");
         final Window settingsWindow = new Window("Settings", skin);
         final CheckBox sound = new CheckBox("Sound", skin, "sound");
@@ -50,6 +49,11 @@ public class MenuScreen implements Screen, InputProcessor {
         settings.addListener(new ChangeListener() {
             public void changed(ChangeEvent e, Actor a) {
                 stage.addActor(settingsWindow);
+            }
+        });
+        test.addListener(new ChangeListener() {
+            public void changed(ChangeEvent e, Actor a) {
+                game.setScreen(game.testScreen);
             }
         });
         quit.addListener(new ChangeListener() {
@@ -68,9 +72,12 @@ public class MenuScreen implements Screen, InputProcessor {
         table.row();
         table.add(settings).fillX().space(10);
         table.row();
+        table.add(test).fillX().space(10);
+        table.row();
         table.add(quit).fillX().space(10);
         stage.addActor(table);
 
+        inputMultiplexer = new InputMultiplexer(stage, this);
     }
 
     /*
@@ -78,7 +85,7 @@ public class MenuScreen implements Screen, InputProcessor {
      */
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
         Gdx.input.setCatchBackKey(true);
     }
 
@@ -103,7 +110,7 @@ public class MenuScreen implements Screen, InputProcessor {
 
     @Override
     public void resume() {
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
         Gdx.input.setCatchBackKey(true);
     }
 

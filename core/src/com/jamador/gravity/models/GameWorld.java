@@ -199,8 +199,6 @@ public class GameWorld {
 
         player = new Player(gravitySystem, new Vector2(80, 50), 30f);
         gravitySystem.add(player);
-
-
     }
 
     /*

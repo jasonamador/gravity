@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.Array;
@@ -21,6 +22,7 @@ public class GameRenderer {
     private Box2DDebugRenderer debugRenderer;
     private SpriteBatch batch;
     private Array<GravityObject> gravityObjects;
+    private TextureAtlas ballAtlas;
     private Array<Sprite> stars;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
     private BitmapFont font100, font75, font50, font35, font25, font20;
@@ -31,6 +33,7 @@ public class GameRenderer {
     public GameRenderer(GameWorld world) {
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
+        ballAtlas = new TextureAtlas(Gdx.files.internal("textures/ball.atlas"));
         this.world = world;
         gravityObjects = world.getGravityObjects();
         camera = new OrthographicCamera(160f, 100f);

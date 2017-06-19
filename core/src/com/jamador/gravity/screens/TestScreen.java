@@ -3,31 +3,25 @@ package com.jamador.gravity.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.Array;
 import com.jamador.gravity.GravityGame;
 
 public class TestScreen implements Screen, InputProcessor {
     GravityGame game;
-    private InputMultiplexer inputMultiplexer;
-
-    /*
-    Scene2D.UI
-     */
-    Skin skin;
-    Stage stage;
+    TextureAtlas atlas;
+    float radius = 2;
+    Array<Sprite> spriteArray;
+    int frame = 0;
+    boolean grow;
 
     /*
     SpriteBatch
      */
     SpriteBatch batch;
     OrthographicCamera camera;
-
 
     public TestScreen(final GravityGame game) {
         this.game = game;
@@ -39,45 +33,10 @@ public class TestScreen implements Screen, InputProcessor {
         camera = new OrthographicCamera(160f, 100f);
         camera.position.set(80, 50, 0);
         camera.update();
+        batch.setProjectionMatrix(camera.combined);
 
-        /*
-        scene2d
-         */
-        stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-        TextButton start = new TextButton("Start", skin, "text-only");
-        TextButton settings = new TextButton("Settings", skin, "text-only");
-        TextButton quit = new TextButton("Quit", skin, "text-only");
-        CheckBox sound = new CheckBox("", skin, "sound");
-        start.addListener(new ChangeListener() {
-            public void changed(ChangeEvent e, Actor a) {
-                game.setScreen(game.gameScreen);
-            }
-        });
-        settings.addListener(new ChangeListener() {
-            public void changed(ChangeEvent e, Actor a) {
-                System.out.println("Settings");
-            }
-        });
-        quit.addListener(new ChangeListener() {
-            public void changed(ChangeEvent e, Actor a) {
-                Gdx.app.exit();
-            }
-        });
-        Table table = new Table();
-        table.setFillParent(true);
-        table.add(start).fillX().space(10);
-        table.row();
-        table.add(settings).fillX().space(10);
-        table.row();
-        table.add(quit).fillX().space(10);
-        table.row();
-        table.add(sound);
-
-        stage.addActor(table);
-
-        inputMultiplexer = new InputMultiplexer(stage, this);
-        Gdx.input.setInputProcessor(inputMultiplexer);
+        atlas = new TextureAtlas(Gdx.files.internal("textures/ball.atlas"));
+        spriteArray = atlas.createSprites();
     }
 
     /*
@@ -86,21 +45,31 @@ public class TestScreen implements Screen, InputProcessor {
     @Override
     public void show() {
         Gdx.input.setCatchBackKey(true);
-        Gdx.input.setInputProcessor(inputMultiplexer);
+        Gdx.input.setInputProcessor(this);
     }
 
     @Override
     public void render(float delta) {
+        System.out.println((int)(radius * 2));
+        if ((int)(radius * 2) >= spriteArray.size - 1)
+            grow = false;
+        if ((int)(radius * 2) <= 0)
+            grow = true;
+        if (grow)
+            radius += 0.5;
+        else
+            radius -= 0.5;
+
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         /*
         spritebatch
          */
-        batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        spriteArray.get((int)(radius * 2)).setSize(radius * 2, radius * 2);
+        spriteArray.get((int)(radius * 2)).setCenter(80, 50);
+        spriteArray.get((int)(radius * 2)).draw(batch);
+        spriteArray.get((int)(radius * 2)).draw(batch);
         batch.end();
-
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
     }
 
     @Override
@@ -113,7 +82,7 @@ public class TestScreen implements Screen, InputProcessor {
 
     @Override
     public void resume() {
-        Gdx.input.setInputProcessor(inputMultiplexer);
+        Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
     }
 
