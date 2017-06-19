@@ -4,8 +4,9 @@ com.badlogic.gdx.graphics.Color: {
 	light_grey: { r: 0.8, g: 0.8, b: 0.8, a: 1 },
 	white: { r: 1, g: 1, b: 1, a: 1 },
 	red: { r: 1, a: 1 },
-	grey: { r: 0.7, g: 0.7, b: 0.7, a: 1 },
-	black: { a: 1 }
+	light_blue: { r: 0.03529412, g: 0.6745098, b: 0.8901961, a: 1 },
+	black: { a: 1 },
+	grey: { r: 0.7, g: 0.7, b: 0.7, a: 1 }
 },
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
 	font_destructobeambb_reg_32pt: { file: font_destructobeambb_reg_32pt.fnt },
@@ -25,8 +26,13 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		font: font_destructobeambb_reg_32pt,
 		fontColor: { a: 1, b: 1, g: 1, r: 1 },
 		disabledFontColor: { a: 1, b: 0.8, g: 0.8, r: 0.8 },
-		up: default-round,
+		up: grav_text_button,
 		down: default-round-down
+	},
+	text-only: {
+		font: font_destructobeambb_reg_32pt,
+		fontColor: { a: 1, b: 1, g: 1, r: 1 },
+		downFontColor: { a: 1, b: 0.8901961, g: 0.6745098, r: 0.03529412 }
 	},
 	toggle: {
 		font: default-font,
@@ -48,7 +54,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Touchpad$TouchpadStyle: {
 	default: { background: default-pane, knob: default-round-large }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
-	default: { up: default-round, down: default-round-down },
+	default: { up: grav_text_button, down: grav_text_button },
 	toggle: { up: default-round, down: default-round-down, checked: default-round-down }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
@@ -121,7 +127,8 @@ com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 		checkboxOff: check-off,
 		font: default-font,
 		fontColor: { a: 1, b: 1, g: 1, r: 1 }
-	}
+	},
+	sound: { checkboxOn: sound-on, checkboxOff: sound-off, font: font_destructobeambb_reg_32pt }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle: {
 	default: { plus: tree-plus, minus: tree-minus, selection: default-select-selection }

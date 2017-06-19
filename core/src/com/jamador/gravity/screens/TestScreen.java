@@ -3,17 +3,11 @@ package com.jamador.gravity.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.jamador.gravity.GravityGame;
@@ -21,8 +15,6 @@ import com.jamador.gravity.GravityGame;
 public class TestScreen implements Screen, InputProcessor {
     GravityGame game;
     private InputMultiplexer inputMultiplexer;
-
-    private int screenWidth, screenHeight;
 
     /*
     Scene2D.UI
@@ -35,14 +27,10 @@ public class TestScreen implements Screen, InputProcessor {
      */
     SpriteBatch batch;
     OrthographicCamera camera;
-    Sprite ball;
 
 
     public TestScreen(final GravityGame game) {
         this.game = game;
-        screenWidth = Gdx.graphics.getWidth();
-        screenHeight = Gdx.graphics.getHeight();
-
 
         /*
         spritebatch
@@ -51,40 +39,41 @@ public class TestScreen implements Screen, InputProcessor {
         camera = new OrthographicCamera(160f, 100f);
         camera.position.set(80, 50, 0);
         camera.update();
-        ball = new Sprite(new Texture(Gdx.files.internal("ball.png")));
-        ball.setSize(5, 5);
-        ball.setCenter(80, 50);
 
         /*
         scene2d
          */
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-        TextButton startButton = new TextButton("Start", skin, "default");
-        TextButton settingsButton = new TextButton("Settings", skin, "default");
-        TextButton quitButton = new TextButton("Quit", skin, "default");
-        startButton.addListener(new ChangeListener() {
+        TextButton start = new TextButton("Start", skin, "text-only");
+        TextButton settings = new TextButton("Settings", skin, "text-only");
+        TextButton quit = new TextButton("Quit", skin, "text-only");
+        CheckBox sound = new CheckBox("", skin, "sound");
+        start.addListener(new ChangeListener() {
             public void changed(ChangeEvent e, Actor a) {
                 game.setScreen(game.gameScreen);
             }
         });
-        settingsButton.addListener(new ChangeListener() {
+        settings.addListener(new ChangeListener() {
             public void changed(ChangeEvent e, Actor a) {
                 System.out.println("Settings");
             }
         });
-        quitButton.addListener(new ChangeListener() {
+        quit.addListener(new ChangeListener() {
             public void changed(ChangeEvent e, Actor a) {
                 Gdx.app.exit();
             }
         });
         Table table = new Table();
         table.setFillParent(true);
-        table.add(startButton).fillX().space(10);
+        table.add(start).fillX().space(10);
         table.row();
-        table.add(settingsButton).fillX().space(10);
+        table.add(settings).fillX().space(10);
         table.row();
-        table.add(quitButton).fillX().space(10);
+        table.add(quit).fillX().space(10);
+        table.row();
+        table.add(sound);
+
         stage.addActor(table);
 
         inputMultiplexer = new InputMultiplexer(stage, this);
@@ -96,8 +85,6 @@ public class TestScreen implements Screen, InputProcessor {
      */
     @Override
     public void show() {
-        screenWidth = Gdx.graphics.getWidth();
-        screenHeight = Gdx.graphics.getHeight();
         Gdx.input.setCatchBackKey(true);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
@@ -110,7 +97,6 @@ public class TestScreen implements Screen, InputProcessor {
          */
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        ball.draw(batch);
         batch.end();
 
         stage.act(Gdx.graphics.getDeltaTime());
@@ -119,8 +105,6 @@ public class TestScreen implements Screen, InputProcessor {
 
     @Override
     public void resize(int width, int height) {
-        this.screenWidth = Gdx.graphics.getWidth();
-        this.screenHeight = Gdx.graphics.getHeight();
     }
 
     @Override

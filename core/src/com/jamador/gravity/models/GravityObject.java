@@ -78,8 +78,10 @@ public class GravityObject {
         arrow = new Sprite(new Texture(Gdx.files.internal("arrow.png")));
         arrow.setSize(radius * 2, radius * 2);
         arrow.setOriginCenter();
+        /*
         path = new Array<Sprite>();
         pathTexture = new Texture(Gdx.files.internal("ball.png"));
+        */
 
         netForce = new Vector2();
         singleForce = new Vector2();
@@ -104,7 +106,6 @@ public class GravityObject {
 
         /*
         path
-         */
         lifetime++;
         if (path.size > 10) {
             path.removeIndex(0);
@@ -122,6 +123,7 @@ public class GravityObject {
             s.setOriginCenter();
         }
 
+         */
         /*
         sound
          */
@@ -133,10 +135,10 @@ public class GravityObject {
     public void render(SpriteBatch batch) {
         /*
         path
-         */
         for (Sprite s: path) {
             s.draw(batch);
         }
+         */
 
         /*
         ball

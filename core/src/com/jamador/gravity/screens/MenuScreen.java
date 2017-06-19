@@ -8,11 +8,11 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /*
 gravity
@@ -22,26 +22,46 @@ import com.jamador.gravity.GravityGame;
 public class MenuScreen implements Screen, InputProcessor {
     private GravityGame game;
 
-    private int screenWidth, screenHeight;
+    /*
+    Scene2D.UI
+     */
+    Skin skin;
+    Stage stage;
 
-    private BitmapFont font100, font75, font50, font35, font25, font20;
-    private SpriteBatch textRenderer;
-
-    public MenuScreen(GravityGame game) {
+    public MenuScreen(final GravityGame game) {
         this.game = game;
-        screenWidth = Gdx.graphics.getWidth();
-        screenHeight = Gdx.graphics.getHeight();
 
         /*
-        text
+        scene2d
          */
-        font20 = new BitmapFont(Gdx.files.internal("font5.fnt"), Gdx.files.internal("font5.png"), false);
-        font25 = new BitmapFont(Gdx.files.internal("font4.fnt"), Gdx.files.internal("font4.png"), false);
-        font35 = new BitmapFont(Gdx.files.internal("font3.fnt"), Gdx.files.internal("font3.png"), false);
-        font50 = new BitmapFont(Gdx.files.internal("font2.fnt"), Gdx.files.internal("font2.png"), false);
-        font75 = new BitmapFont(Gdx.files.internal("font1.fnt"), Gdx.files.internal("font1.png"), false);
-        font100 = new BitmapFont(Gdx.files.internal("font0.fnt"), Gdx.files.internal("font0.png"), false);
-        textRenderer = new SpriteBatch();
+        stage = new Stage(new ScreenViewport());
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        TextButton start = new TextButton("Start", skin, "text-only");
+        TextButton settings = new TextButton("Settings", skin, "text-only");
+        TextButton quit = new TextButton("Quit", skin, "text-only");
+        start.addListener(new ChangeListener() {
+            public void changed(ChangeEvent e, Actor a) {
+                game.setScreen(game.gameScreen);
+            }
+        });
+        settings.addListener(new ChangeListener() {
+            public void changed(ChangeEvent e, Actor a) {
+                System.out.println("Settings");
+            }
+        });
+        quit.addListener(new ChangeListener() {
+            public void changed(ChangeEvent e, Actor a) {
+                Gdx.app.exit();
+            }
+        });
+        Table table = new Table();
+        table.setFillParent(true);
+        table.add(start).fillX().space(10);
+        table.row();
+        table.add(settings).fillX().space(10);
+        table.row();
+        table.add(quit).fillX().space(10);
+        stage.addActor(table);
     }
 
     /*
@@ -49,9 +69,7 @@ public class MenuScreen implements Screen, InputProcessor {
      */
     @Override
     public void show() {
-        screenWidth = Gdx.graphics.getWidth();
-        screenHeight = Gdx.graphics.getHeight();
-        Gdx.input.setInputProcessor(this);
+        Gdx.input.setInputProcessor(stage);
         Gdx.input.setCatchBackKey(true);
     }
 
@@ -60,18 +78,14 @@ public class MenuScreen implements Screen, InputProcessor {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         /*
-        text
+        scene2d
          */
-        textRenderer.begin();
-        GlyphLayout layout = new GlyphLayout(font100, "GRAVITY");
-        font100.draw(textRenderer, "GRAVITY", (screenWidth / 2) - (layout.width / 2), (screenHeight / 2) + (layout.height / 2));
-        textRenderer.end();
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-        this.screenWidth = Gdx.graphics.getWidth();
-        this.screenHeight = Gdx.graphics.getHeight();
     }
 
     @Override
@@ -80,7 +94,7 @@ public class MenuScreen implements Screen, InputProcessor {
 
     @Override
     public void resume() {
-        Gdx.input.setInputProcessor(this);
+        Gdx.input.setInputProcessor(stage);
         Gdx.input.setCatchBackKey(true);
     }
 

@@ -214,7 +214,7 @@ public class GameWorld {
         return gravitySystem.getObjects();
     }
 
-    World getWorld() {
+    public World getWorld() {
         return world;
     }
 
