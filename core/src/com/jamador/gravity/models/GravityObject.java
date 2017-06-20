@@ -202,8 +202,7 @@ public class GravityObject {
 
     void grow() {
         radius += growRate;
-        System.out.println(radius);
-        spriteIdx = (int)(radius * 4);
+        spriteIdx = (int)(body.getMass() / 8);
         if (spriteIdx >= ballSprites.size) {
             spriteIdx = ballSprites.size - 1;
         }
@@ -218,7 +217,7 @@ public class GravityObject {
 
     void shrink() {
         radius -= growRate;
-        spriteIdx = (int)(radius * 4);
+        spriteIdx = (int)(body.getMass() / 8);
         if (spriteIdx >= ballSprites.size) {
             spriteIdx = ballSprites.size - 1;
         }
@@ -233,7 +232,7 @@ public class GravityObject {
 
     public void setSprites(Array<Sprite> sprites) {
         ballSprites = sprites;
-        spriteIdx = (int)(radius * 4);
+        spriteIdx = (int)(body.getMass() / 8);
         if (spriteIdx >= ballSprites.size) {
             spriteIdx = ballSprites.size - 1;
         }

@@ -109,12 +109,14 @@ public class GameRenderer {
          */
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+
         /*
         stars
+         */
         for (Sprite s : stars) {
             s.draw(batch);
         }
-         */
+
         /*
         touchdown
          */
