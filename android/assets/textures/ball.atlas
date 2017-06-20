@@ -20,14 +20,14 @@ ball02
   index: -1
 ball03
   rotate: false
-  xy: 1173, 395
+  xy: 1176, 487
   size: 90, 90
   orig: 90, 90
   offset: 0, 0
   index: -1
 ball04
   rotate: false
-  xy: 1176, 487
+  xy: 1173, 395
   size: 90, 90
   orig: 90, 90
   offset: 0, 0

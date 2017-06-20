@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
@@ -13,31 +15,43 @@ import com.badlogic.gdx.utils.Array;
 
 public class GravityObject {
     GravitySystem system;
-    private Array<Sprite> path;
-    private Texture pathTexture;
+    boolean active = true;
+
+    /*
+    graphics
+     */
     private Sprite arrow;
+    private Array<Sprite> ballSprites;
+    private int spriteIdx = 10;
+    ParticleEffect tail;
+    private Color color;
+
+    /*
+    physics
+     */
     Body body;
     private Fixture fixture;
     private Vector2 singleForce;
+    Vector2 netForce;
+    float radius;
+    Circle bounds;
+    float newMass;
+    private float growRate;
+    boolean growing = false;
+    boolean shrinking = false;
+
+    /*
+    sound
+     */
     Sound sound;
     long soundId;
     float frequency;
-    Vector2 netForce;
-    float radius;
-    float newMass;
-    private float growRate;
-    Circle bounds;
-    boolean growing = false;
-    boolean shrinking = false;
-    boolean active = true;
-    private Array<Sprite> ballSprites;
-    private int spriteIdx = 10;
-    private Color color;
 
     GravityObject(GravitySystem system, Vector2 position, float mass, Color color) {
         this.system = system;
         this.color = color;
         radius = (float) Math.sqrt(mass / Math.PI);
+        bounds = new Circle(position, radius);
 
         /*
         sound
@@ -47,19 +61,13 @@ public class GravityObject {
         soundId = sound.loop(0.4f);
 
         /*
-        bounds
-         */
-        bounds = new Circle(position, radius);
-
-        /*
-        box2d definitions
+        physics
          */
         BodyDef bd = new BodyDef();
         bd.type = BodyDef.BodyType.DynamicBody;
         bd.position.set(position);
         body = system.get2DWorld().createBody(bd);
         body.setUserData(this);
-
         FixtureDef fd = new FixtureDef();
         fd.shape = new CircleShape();
         fd.shape.setRadius(radius);
@@ -67,25 +75,28 @@ public class GravityObject {
         fd.friction = 0.6f;
         fd.restitution = 1.0f;
         fixture = body.createFixture(fd);
+        netForce = new Vector2();
+        singleForce = new Vector2();
 
         /*
-        sprites
+        graphics
          */
+        tail = new ParticleEffect();
+        tail.load(Gdx.files.internal("tail.p"), Gdx.files.internal("particles"));
+        tail.setPosition(position.x, position.y);
+        tail.scaleEffect(radius);
+        tail.getEmitters().peek().getScale().setHigh(radius * 2.2f);
+        tail.start();
         arrow = new Sprite(new Texture(Gdx.files.internal("arrow.png")));
         arrow.setSize(radius * 2, radius * 2);
         arrow.setOriginCenter();
-        /*
-        path = new Array<Sprite>();
-        pathTexture = new Texture(Gdx.files.internal("ball.png"));
-        */
 
-        netForce = new Vector2();
-        singleForce = new Vector2();
     }
 
     public void update() {
         body.applyForceToCenter(netForce, true);
         bounds.setPosition(body.getPosition());
+        tail.setPosition(bounds.x, bounds.y);
         if(growing) {
             if (body.getMass() < newMass)
                 grow();
@@ -99,27 +110,6 @@ public class GravityObject {
                 destroy();
             }
         }
-
-        /*
-        path
-        lifetime++;
-        if (path.size > 10) {
-            path.removeIndex(0);
-        }
-        if (lifetime % 30 == 0) {
-            lifetime = 0;
-            path.add(new Sprite(pathTexture));
-            path.peek().setPosition(ball.getX(), ball.getY());
-            path.peek().setSize(radius * 2, radius * 2);
-            path.peek().setOriginCenter();
-            path.peek().setColor(0.1f, 0.9f,1.0f, 1);
-        }
-        for (Sprite s: path) {
-            s.setSize(s.getWidth() * .99f, s.getHeight() * .99f);
-            s.setOriginCenter();
-        }
-
-         */
         /*
         sound
          */
@@ -130,28 +120,21 @@ public class GravityObject {
 
     public void render(SpriteBatch batch) {
         /*
-        path
-        for (Sprite s: path) {
-            s.draw(batch);
-        }
+        tail
          */
-
+        tail.draw(batch, Gdx.graphics.getDeltaTime());
         /*
         ball
          */
         ballSprites.get(spriteIdx).setRotation(body.getAngle() * 57.3f);
         ballSprites.get(spriteIdx).setCenter(body.getPosition().x, body.getPosition().y);
-        ballSprites.get(spriteIdx).draw(batch);
+        //ballSprites.get(spriteIdx).draw(batch);
         if (system.getObjects().size > 1) {
             arrow.setRotation(netForce.angle() + 45 + 180);
             arrow.setPosition(ballSprites.get(spriteIdx).getX(), ballSprites.get(spriteIdx).getY());
         }
 
-        /*
-        arrow
-         */
-        arrow.draw(batch);
-
+        //arrow.draw(batch);
         netForce.set(0,0);
     }
 
@@ -159,6 +142,7 @@ public class GravityObject {
         active = false;
         shrinking = false;
         body.destroyFixture(fixture);
+        tail.dispose();
         /*
         make new getter for this stupid call
          */
@@ -202,13 +186,14 @@ public class GravityObject {
 
     void grow() {
         radius += growRate;
+        tail.getEmitters().peek().getScale().setHigh(radius * 2.2f);
+        fixture.getShape().setRadius(radius);
+        bounds.setRadius(radius);
+        body.resetMassData();
         spriteIdx = (int)(body.getMass() / 8);
         if (spriteIdx >= ballSprites.size) {
             spriteIdx = ballSprites.size - 1;
         }
-        fixture.getShape().setRadius(radius);
-        bounds.setRadius(radius);
-        body.resetMassData();
         ballSprites.get(spriteIdx).setSize(radius*2, radius*2);
         ballSprites.get(spriteIdx).setOriginCenter();
         arrow.setSize(radius*2, radius*2);
@@ -217,13 +202,14 @@ public class GravityObject {
 
     void shrink() {
         radius -= growRate;
+        tail.getEmitters().peek().getScale().setHigh(radius * 2.2f);
+        fixture.getShape().setRadius(radius);
+        bounds.setRadius(radius);
+        body.resetMassData();
         spriteIdx = (int)(body.getMass() / 8);
         if (spriteIdx >= ballSprites.size) {
             spriteIdx = ballSprites.size - 1;
         }
-        fixture.getShape().setRadius(radius);
-        bounds.setRadius(radius);
-        body.resetMassData();
         ballSprites.get(spriteIdx).setSize(radius * 2, radius * 2);
         ballSprites.get(spriteIdx).setOriginCenter();
         arrow.setSize(radius * 2, radius * 2);

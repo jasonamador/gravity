@@ -3,16 +3,16 @@ package com.jamador.gravity.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.jamador.gravity.GravityGame;
 
 public class TestScreen implements Screen, InputProcessor {
     GravityGame game;
     TextureAtlas atlas;
-    float radius = 2;
+    Vector3 mousePosition = new Vector3();
+    float radius = 5;
     Array<Sprite> spriteArray;
     int frame = 0;
     boolean grow;
@@ -22,6 +22,13 @@ public class TestScreen implements Screen, InputProcessor {
      */
     SpriteBatch batch;
     OrthographicCamera camera;
+
+    /*
+    particle emitter
+     */
+    ParticleEffect effect;
+    float effectScale = 1;
+
 
     public TestScreen(final GravityGame game) {
         this.game = game;
@@ -35,8 +42,20 @@ public class TestScreen implements Screen, InputProcessor {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
+        /*
+        texture atlas
+         */
         atlas = new TextureAtlas(Gdx.files.internal("textures/ball.atlas"));
         spriteArray = atlas.createSprites();
+
+        /*
+        particle effect
+         */
+        effect = new ParticleEffect();
+        effect.load(Gdx.files.internal("tail.p"), Gdx.files.internal("particles"));
+        effect.setPosition(80, 50);
+        effect.start();
+
     }
 
     /*
@@ -50,7 +69,7 @@ public class TestScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-        System.out.println((int)(radius * 2));
+        /*
         if ((int)(radius * 2) >= spriteArray.size - 1)
             grow = false;
         if ((int)(radius * 2) <= 0)
@@ -59,15 +78,15 @@ public class TestScreen implements Screen, InputProcessor {
             radius += 0.5;
         else
             radius -= 0.5;
-
+        */
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         /*
         spritebatch
          */
         batch.begin();
+        effect.draw(batch, Gdx.graphics.getDeltaTime());
         spriteArray.get((int)(radius * 2)).setSize(radius * 2, radius * 2);
-        spriteArray.get((int)(radius * 2)).setCenter(80, 50);
-        spriteArray.get((int)(radius * 2)).draw(batch);
+        spriteArray.get((int)(radius * 2)).setCenter(mousePosition.x, mousePosition.y);
         spriteArray.get((int)(radius * 2)).draw(batch);
         batch.end();
     }
@@ -102,6 +121,14 @@ public class TestScreen implements Screen, InputProcessor {
         if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK) {
             game.setScreen(game.menuScreen);
         }
+        if (keycode == Input.Keys.PLUS) {
+            effectScale += 0.1;
+            effect.scaleEffect(effectScale);
+        }
+        if (keycode == Input.Keys.MINUS) {
+            effectScale -= 0.1;
+            effect.scaleEffect(effectScale);
+        }
         return false;
     }
 
@@ -117,7 +144,6 @@ public class TestScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println(screenX + " " + screenY);
         return false;
     }
 
@@ -133,6 +159,8 @@ public class TestScreen implements Screen, InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        camera.unproject(mousePosition.set(screenX, screenY, 0));
+        effect.setPosition(mousePosition.x, mousePosition.y);
         return false;
     }
 

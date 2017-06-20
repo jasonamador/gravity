@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.jamador.gravity.GravityGame;
 import com.jamador.gravity.screens.GameScreen;
 
 public class GameWorld {
@@ -130,7 +129,7 @@ public class GameWorld {
                     new Vector2(
                             80 + (30 * (float)Math.cos(x * 2 * Math.PI / 16)),
                             50 + (30 * (float)Math.sin(x * 2 * Math.PI / 16))),
-                    10f, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
+                    10f, new Color(1, 1, 1, 1)));
         }
 
         player = new Player(gravitySystem, new Vector2(80, 50), 30f);
@@ -156,7 +155,7 @@ public class GameWorld {
         timestep = 1/60f;
         for (int x=0; x<15; x++) {
             gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
-                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
+                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(1, 1, 1, 1)));
         }
         System.out.println("post gsystem creation");
         player = new Player(gravitySystem, new Vector2(80, 50), 35f);
@@ -175,7 +174,7 @@ public class GameWorld {
         timestep = 1/60f;
         for (int x=0; x<15; x++) {
             gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
-                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
+                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(1, 1, 1, 1)));
         }
         System.out.println("post gsystem creation");
         player = new Player(gravitySystem, new Vector2(80, 50), 35f);
