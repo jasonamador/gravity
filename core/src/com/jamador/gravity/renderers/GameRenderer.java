@@ -83,6 +83,10 @@ public class GameRenderer {
             star.setSize(size, size);
             stars.add(new Sprite(star));
         }
+
+        for (GravityObject o: gravityObjects) {
+            o.setSprites(ballAtlas.createSprites());
+        }
     }
 
     public void render() {
@@ -138,10 +142,16 @@ public class GameRenderer {
         /*
         box2d debug
          */
-        debugRenderer.render(world.getWorld(), camera.combined);
+        //debugRenderer.render(world.getWorld(), camera.combined);
     }
 
     public OrthographicCamera getCamera() {
         return camera;
+    }
+
+    public void reset() {
+        for (GravityObject o: gravityObjects) {
+            o.setSprites(ballAtlas.createSprites());
+        }
     }
 }

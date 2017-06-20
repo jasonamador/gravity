@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.jamador.gravity.GravityGame;
+import com.jamador.gravity.screens.GameScreen;
 
 public class GameWorld {
     private World world;
@@ -17,8 +19,10 @@ public class GameWorld {
     private float timestep = 1/60f;
     public boolean touchDown;
     public Vector3 mousePosition;
+    private GameScreen screen;
 
-    public GameWorld() {
+    public GameWorld(GameScreen screen) {
+        this.screen = screen;
         score = 0;
 
         /*
@@ -115,8 +119,22 @@ public class GameWorld {
         /*
         gravity system
          */
-        Random r = new Random();
         gravitySystem = new GravitySystem(this, new Array<GravityObject>());
+
+        /*
+        circle
+         */
+        Random r = new Random();
+        for (int x=0; x<16; x++) {
+            gravitySystem.add(new GravityObject(gravitySystem,
+                    new Vector2(
+                            80 + (30 * (float)Math.cos(x * 2 * Math.PI / 16)),
+                            50 + (30 * (float)Math.sin(x * 2 * Math.PI / 16))),
+                    10f, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
+        }
+
+        player = new Player(gravitySystem, new Vector2(80, 50), 30f);
+        gravitySystem.add(player);
     }
 
     public void update() {
@@ -145,6 +163,7 @@ public class GameWorld {
         System.out.println("post player creation");
         gravitySystem.add(player);
         System.out.println("post player add");
+        screen.reset();
     }
 
     void win() {
@@ -163,7 +182,7 @@ public class GameWorld {
         System.out.println("post player creation");
         gravitySystem.add(player);
         System.out.println("post player add");
-
+        screen.reset();
     }
 
     public void increaseTimestep() {
@@ -172,33 +191,6 @@ public class GameWorld {
 
     public void decreaseTimestep() {
         timestep -= 1/60f;
-    }
-
-    public void initialize() {
-
-        /*
-        random
-        for (int x=0; x<15; x++) {
-            gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
-                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
-        }
-         */
-
-        /*
-        circle
-         */
-        Random r = new Random();
-
-        for (int x=0; x<16; x++) {
-            gravitySystem.add(new GravityObject(gravitySystem,
-                    new Vector2(
-                            80 + (30 * (float)Math.cos(x * 2 * Math.PI / 16)),
-                            50 + (30 * (float)Math.sin(x * 2 * Math.PI / 16))),
-                    10f, new Color(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1)));
-        }
-
-        player = new Player(gravitySystem, new Vector2(80, 50), 30f);
-        gravitySystem.add(player);
     }
 
     /*

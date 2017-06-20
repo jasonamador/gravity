@@ -15,8 +15,12 @@ public class GameScreen implements Screen, InputProcessor {
 
     public GameScreen(GravityGame game) {
         this.game = game;
-        gameWorld = new GameWorld();
+        gameWorld = new GameWorld(this);
         gameRenderer = new GameRenderer(gameWorld);
+    }
+
+    public void reset() {
+        gameRenderer.reset();
     }
 
     /*
@@ -26,7 +30,6 @@ public class GameScreen implements Screen, InputProcessor {
     public void show() {
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
-        gameWorld.initialize();
     }
 
     @Override

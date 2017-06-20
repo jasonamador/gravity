@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.Array;
 
 public class GravityObject {
     GravitySystem system;
-    private Sprite ball;
     private Array<Sprite> path;
     private Texture pathTexture;
     private Sprite arrow;
@@ -31,9 +30,13 @@ public class GravityObject {
     boolean growing = false;
     boolean shrinking = false;
     boolean active = true;
+    private Array<Sprite> ballSprites;
+    private int spriteIdx = 10;
+    private Color color;
 
     GravityObject(GravitySystem system, Vector2 position, float mass, Color color) {
         this.system = system;
+        this.color = color;
         radius = (float) Math.sqrt(mass / Math.PI);
 
         /*
@@ -68,10 +71,6 @@ public class GravityObject {
         /*
         sprites
          */
-        ball = new Sprite(new Texture(Gdx.files.internal("ball.png")));
-        ball.setSize(radius * 2, radius * 2);
-        ball.setOriginCenter();
-        ball.setColor(color);
         arrow = new Sprite(new Texture(Gdx.files.internal("arrow.png")));
         arrow.setSize(radius * 2, radius * 2);
         arrow.setOriginCenter();
@@ -140,12 +139,12 @@ public class GravityObject {
         /*
         ball
          */
-        ball.setRotation(body.getAngle() * 57.3f);
-        ball.setCenter(body.getPosition().x, body.getPosition().y);
-        ball.draw(batch);
+        ballSprites.get(spriteIdx).setRotation(body.getAngle() * 57.3f);
+        ballSprites.get(spriteIdx).setCenter(body.getPosition().x, body.getPosition().y);
+        ballSprites.get(spriteIdx).draw(batch);
         if (system.getObjects().size > 1) {
             arrow.setRotation(netForce.angle() + 45 + 180);
-            arrow.setPosition(ball.getX(), ball.getY());
+            arrow.setPosition(ballSprites.get(spriteIdx).getX(), ballSprites.get(spriteIdx).getY());
         }
 
         /*
@@ -203,23 +202,45 @@ public class GravityObject {
 
     void grow() {
         radius += growRate;
+        System.out.println(radius);
+        spriteIdx = (int)(radius * 4);
+        if (spriteIdx >= ballSprites.size) {
+            spriteIdx = ballSprites.size - 1;
+        }
         fixture.getShape().setRadius(radius);
         bounds.setRadius(radius);
         body.resetMassData();
-        ball.setSize(radius*2, radius*2);
-        ball.setOriginCenter();
+        ballSprites.get(spriteIdx).setSize(radius*2, radius*2);
+        ballSprites.get(spriteIdx).setOriginCenter();
         arrow.setSize(radius*2, radius*2);
         arrow.setOriginCenter();
     }
 
     void shrink() {
         radius -= growRate;
+        spriteIdx = (int)(radius * 4);
+        if (spriteIdx >= ballSprites.size) {
+            spriteIdx = ballSprites.size - 1;
+        }
         fixture.getShape().setRadius(radius);
         bounds.setRadius(radius);
         body.resetMassData();
-        ball.setSize(radius * 2, radius * 2);
-        ball.setOriginCenter();
+        ballSprites.get(spriteIdx).setSize(radius * 2, radius * 2);
+        ballSprites.get(spriteIdx).setOriginCenter();
         arrow.setSize(radius * 2, radius * 2);
         arrow.setOriginCenter();
+    }
+
+    public void setSprites(Array<Sprite> sprites) {
+        ballSprites = sprites;
+        spriteIdx = (int)(radius * 4);
+        if (spriteIdx >= ballSprites.size) {
+            spriteIdx = ballSprites.size - 1;
+        }
+        for (Sprite s: ballSprites) {
+            s.setSize(radius * 2, radius * 2);
+            s.setOriginCenter();
+            s.setColor(color);
+        }
     }
 }
