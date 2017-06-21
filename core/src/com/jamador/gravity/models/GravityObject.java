@@ -5,7 +5,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
@@ -46,7 +45,9 @@ public class GravityObject {
     Sound sound;
     long soundId;
     float frequency;
-
+    float[] notes = {55, 65.406f, 82.407f, 97.999f, 123.471f, 146.832f, 174.614f, 220, 261.626f, 329.628f, 391.995f,
+            493.883f, 587.33f};
+    //, 698.456f, 880, 1046.502f, 1318.51f, 1567.982f, 1975.533f, 2349.318f, 2793.826f, 3520
     GravityObject(GravitySystem system, Vector2 position, float mass, Color color) {
         this.system = system;
         this.color = color;
@@ -57,8 +58,16 @@ public class GravityObject {
         sound
          */
         sound = Gdx.audio.newSound(Gdx.files.internal("sound.wav"));
-        frequency = 1000 - (radius * 100);
-        soundId = sound.loop(0.4f);
+        int idx = notes.length - (int)radius - 3;
+        if (idx >= notes.length) {
+            idx = notes.length - 1;
+        }
+        if (idx < 0) {
+            idx = 0;
+        }
+        frequency = notes[idx];
+        soundId = sound.loop(0.1f);
+        sound.setPitch(soundId, notes[idx] / 440);
 
         /*
         physics
@@ -85,7 +94,7 @@ public class GravityObject {
         tail.load(Gdx.files.internal("tail.p"), Gdx.files.internal("particles"));
         tail.setPosition(position.x, position.y);
         tail.scaleEffect(radius);
-        tail.getEmitters().peek().getScale().setHigh(radius * 2.2f);
+        tail.getEmitters().peek().getScale().setHigh(radius * 2.5f);
         tail.start();
         arrow = new Sprite(new Texture(Gdx.files.internal("arrow.png")));
         arrow.setSize(radius * 2, radius * 2);
@@ -110,12 +119,19 @@ public class GravityObject {
                 destroy();
             }
         }
+
         /*
         sound
          */
-        frequency = 1000 - (radius * 100);
-        sound.setPitch(soundId, frequency / 500 - 1 + 0.1f);
-        sound.setPan(soundId, body.getPosition().x / 80 - 80, 0.4f);
+        int idx = notes.length - (int)radius - 3;
+        if (idx >= notes.length) {
+            idx = notes.length - 1;
+        }
+        if (idx < 0) {
+            idx = 0;
+        }
+        frequency = notes[idx];
+        sound.setPitch(soundId, frequency / 440);
     }
 
     public void render(SpriteBatch batch) {
@@ -186,7 +202,7 @@ public class GravityObject {
 
     void grow() {
         radius += growRate;
-        tail.getEmitters().peek().getScale().setHigh(radius * 2.2f);
+        tail.getEmitters().peek().getScale().setHigh(radius * 2.5f);
         fixture.getShape().setRadius(radius);
         bounds.setRadius(radius);
         body.resetMassData();
@@ -202,7 +218,7 @@ public class GravityObject {
 
     void shrink() {
         radius -= growRate;
-        tail.getEmitters().peek().getScale().setHigh(radius * 2.2f);
+        tail.getEmitters().peek().getScale().setHigh(radius * 2.5f);
         fixture.getShape().setRadius(radius);
         bounds.setRadius(radius);
         body.resetMassData();

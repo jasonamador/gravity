@@ -16,6 +16,8 @@ public class Player extends GravityObject{
         tail.scaleEffect(radius);
         tail.getEmitters().peek().getScale().setHigh(radius * 2.2f);
         tail.start();
+
+        sound.setVolume(soundId, 0.3f);
     }
 
     public void update() {
@@ -36,8 +38,17 @@ public class Player extends GravityObject{
             }
         }
 
-        frequency = 1000 - (radius * 100);
-        sound.setPitch(soundId, frequency / 500 - 1 + 0.1f);
-        sound.setPan(soundId, body.getPosition().x / 80 - 80, 0.4f);
+        /*
+        sound
+         */
+        int idx = notes.length - (int)radius - 3;
+        if (idx >= notes.length) {
+            idx = notes.length - 1;
+        }
+        if (idx < 0) {
+            idx = 0;
+        }
+        frequency = notes[idx];
+        sound.setPitch(soundId, frequency / 440);
     }
 }

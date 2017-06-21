@@ -1,34 +1,45 @@
 package com.jamador.gravity.screens;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.LongArray;
 import com.jamador.gravity.GravityGame;
 
 public class TestScreen implements Screen, InputProcessor {
-    GravityGame game;
-    TextureAtlas atlas;
-    Vector3 mousePosition = new Vector3();
-    float radius = 5;
-    Array<Sprite> spriteArray;
+    private GravityGame game;
+    private Vector3 mousePosition = new Vector3();
+    private float radius = 5;
+    private Array<Sprite> spriteArray;
     int frame = 0;
     boolean grow;
 
     /*
     SpriteBatch
      */
-    SpriteBatch batch;
-    OrthographicCamera camera;
+    private SpriteBatch batch;
+    private OrthographicCamera camera;
 
     /*
     particle emitter
      */
-    ParticleEffect effect;
-    float effectScale = 1;
+    private ParticleEffect effect;
+    private float effectScale = 1;
 
+    /*
+    sound
+     */
+    private Sound sound;
+    private LongArray soundIds = new LongArray();
+    private float frequency;
+    private float elapsed = 0;
+    private int noteIdx;
+    private float[] notes = {55, 65.406f, 82.407f, 97.999f, 123.471f, 146.832f, 174.614f, 220, 261.626f, 329.628f, 391.995f,
+            493.883f, 587.33f, 698.456f, 880, 1046.502f, 1318.51f, 1567.982f, 1975.533f, 2349.318f, 2793.826f, 3520};
 
     public TestScreen(final GravityGame game) {
         this.game = game;
@@ -45,7 +56,7 @@ public class TestScreen implements Screen, InputProcessor {
         /*
         texture atlas
          */
-        atlas = new TextureAtlas(Gdx.files.internal("textures/ball.atlas"));
+        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("textures/ball.atlas"));
         spriteArray = atlas.createSprites();
 
         /*
@@ -56,6 +67,10 @@ public class TestScreen implements Screen, InputProcessor {
         effect.setPosition(80, 50);
         effect.start();
 
+        /*
+        sound
+         */
+        sound = Gdx.audio.newSound(Gdx.files.internal("sound.wav"));
     }
 
     /*
@@ -65,21 +80,28 @@ public class TestScreen implements Screen, InputProcessor {
     public void show() {
         Gdx.input.setCatchBackKey(true);
         Gdx.input.setInputProcessor(this);
+        /*
+        for (int i = 0; i < 3; i++) {
+            soundIds.add(sound.loop(0.4f));
+            sound.setPitch(i, notes[i + 8] / 440);
+        }
+        */
+        sound.loop(0.4f);
     }
 
     @Override
     public void render(float delta) {
-        /*
         if ((int)(radius * 2) >= spriteArray.size - 1)
             grow = false;
         if ((int)(radius * 2) <= 0)
             grow = true;
         if (grow)
-            radius += 0.5;
+            radius += 0.1;
         else
-            radius -= 0.5;
-        */
+            radius -= 0.1;
+        effect.getEmitters().peek().getScale().setHigh(radius * 2.2f);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         /*
         spritebatch
          */
@@ -89,6 +111,20 @@ public class TestScreen implements Screen, InputProcessor {
         spriteArray.get((int)(radius * 2)).setCenter(mousePosition.x, mousePosition.y);
         spriteArray.get((int)(radius * 2)).draw(batch);
         batch.end();
+
+        /*
+        sound
+        elapsed += Gdx.graphics.getDeltaTime();
+        if (elapsed >= 0.25f) {
+            noteIdx++;
+            elapsed = 0;
+        }
+        if (noteIdx >= notes.length) {
+            noteIdx = 0;
+        }
+        */
+        frequency = notes[notes.length - (int)radius - 3];
+        sound.setPitch(0, frequency / 440);
     }
 
     @Override
