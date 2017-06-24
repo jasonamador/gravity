@@ -153,12 +153,15 @@ public class GameWorld {
         power = 100;
         score = 0;
         timestep = 1/60f;
-        for (int x=0; x<15; x++) {
+        for (int x=0; x<50; x++) {
+            /*gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
+                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(1, 1, 1, 1)));*/
             gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
-                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(1, 1, 1, 1)));
+                    r.nextFloat() * 90 + 5), 1, new Color(1, 1, 1, 1)));
         }
         System.out.println("post gsystem creation");
-        player = new Player(gravitySystem, new Vector2(80, 50), 35f);
+        //player = new Player(gravitySystem, new Vector2(80, 50), 35f);
+        player = new Player(gravitySystem, new Vector2(80, 50), 3);
         System.out.println("post player creation");
         gravitySystem.add(player);
         System.out.println("post player add");

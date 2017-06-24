@@ -70,7 +70,7 @@ public class TestScreen implements Screen, InputProcessor {
         /*
         sound
          */
-        sound = Gdx.audio.newSound(Gdx.files.internal("sound.wav"));
+        sound = Gdx.audio.newSound(Gdx.files.internal("drums.wav"));
     }
 
     /*
@@ -86,7 +86,7 @@ public class TestScreen implements Screen, InputProcessor {
             sound.setPitch(i, notes[i + 8] / 440);
         }
         */
-        sound.loop(0.4f);
+        sound.loop(0.2f);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class TestScreen implements Screen, InputProcessor {
         }
         */
         frequency = notes[notes.length - (int)radius - 3];
-        sound.setPitch(0, frequency / 440);
+        //sound.setPitch(0, frequency / 440);
     }
 
     @Override

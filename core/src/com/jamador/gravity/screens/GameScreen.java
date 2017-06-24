@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.jamador.gravity.GravityGame;
 import com.jamador.gravity.models.GameWorld;
 import com.jamador.gravity.renderers.GameRenderer;
@@ -12,11 +14,14 @@ public class GameScreen implements Screen, InputProcessor {
     private GravityGame game;
     private GameWorld gameWorld;
     private GameRenderer gameRenderer;
+    private Sound drums;
 
     public GameScreen(GravityGame game) {
         this.game = game;
         gameWorld = new GameWorld(this);
         gameRenderer = new GameRenderer(gameWorld);
+        drums = Gdx.audio.newSound(Gdx.files.internal("drums.wav"));
+        drums.loop();
     }
 
     public void reset() {
@@ -46,22 +51,21 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
         Gdx.input.setInputProcessor(this);
+        drums.play();
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override
     public void dispose() {
-
+        drums.dispose();
     }
 
     /*
