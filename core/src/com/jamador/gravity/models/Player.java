@@ -1,15 +1,17 @@
 package com.jamador.gravity.models;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Vector2;
 
 public class Player extends GravityObject{
 
-    public Player(GravitySystem system, Vector2 position, float mass) {
-        super(system, position, mass, new Color(1, 1, 1, 1));
-        tail.dispose();
+    public Player(GravitySystem system, Vector2 position, float mass, Sound s) {
+        super(system, position, mass, new Color(1, 1, 1, 1), s);
+        red.dispose();
+        blue.dispose();
         tail = new ParticleEffect();
         tail.load(Gdx.files.internal("player.p"), Gdx.files.internal("particles"));
         tail.setPosition(position.x, position.y);

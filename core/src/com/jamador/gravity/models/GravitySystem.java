@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class GravitySystem {
     private Array<GravityObject> gravityObjects;
+    private Player player;
     private GameWorld world;
     float g = 40f;
     float growTime = 0.5f;
@@ -40,10 +41,10 @@ public class GravitySystem {
                 gravityObjects.get(j).applyGravity(gravityObjects.get(i).getPosition().x, gravityObjects.get(i).getPosition().y, gravityObjects.get(i).getMass());
             }
         for (int i = 0; i < gravityObjects.size; i++) {
+            gravityObjects.get(i).update();
             if (!gravityObjects.get(i).active) {
                 gravityObjects.removeValue(gravityObjects.get(i), true);
             }
-            gravityObjects.get(i).update();
         }
     }
 
@@ -60,5 +61,13 @@ public class GravitySystem {
             o.destroy();
         }
         gravityObjects.clear();
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void addPlayer(Player player) {
+        this.player = player;
     }
 }

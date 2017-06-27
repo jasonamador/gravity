@@ -2,6 +2,7 @@ package com.jamador.gravity.models;
 
 import java.util.Random;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -19,10 +20,16 @@ public class GameWorld {
     public boolean touchDown;
     public Vector3 mousePosition;
     private GameScreen screen;
+    private Sound sound;
 
     public GameWorld(GameScreen screen) {
         this.screen = screen;
         score = 0;
+
+        /*
+        sound
+         */
+        sound = Gdx.audio.newSound(Gdx.files.internal("sound.wav"));
 
         /*
         controller
@@ -129,11 +136,11 @@ public class GameWorld {
                     new Vector2(
                             80 + (30 * (float)Math.cos(x * 2 * Math.PI / 16)),
                             50 + (30 * (float)Math.sin(x * 2 * Math.PI / 16))),
-                    10f, new Color(1, 1, 1, 1)));
+                    10f, new Color(1, 1, 1, 1), sound));
         }
 
-        player = new Player(gravitySystem, new Vector2(80, 50), 30f);
-        gravitySystem.add(player);
+        player = new Player(gravitySystem, new Vector2(80, 50), 30f, sound);
+        gravitySystem.addPlayer(player);
     }
 
     public void update() {
@@ -153,15 +160,15 @@ public class GameWorld {
         power = 100;
         score = 0;
         timestep = 1/60f;
-        for (int x=0; x<50; x++) {
+        for (int x=0; x<15; x++) {
             /*gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
                     r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(1, 1, 1, 1)));*/
             gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
-                    r.nextFloat() * 90 + 5), 1, new Color(1, 1, 1, 1)));
+                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(1, 1, 1, 1), sound));
         }
         System.out.println("post gsystem creation");
-        //player = new Player(gravitySystem, new Vector2(80, 50), 35f);
-        player = new Player(gravitySystem, new Vector2(80, 50), 3);
+        player = new Player(gravitySystem, new Vector2(80, 50), 35f, sound);
+        //player = new Player(gravitySystem, new Vector2(80, 50), 3);
         System.out.println("post player creation");
         gravitySystem.add(player);
         System.out.println("post player add");
@@ -177,10 +184,10 @@ public class GameWorld {
         timestep = 1/60f;
         for (int x=0; x<15; x++) {
             gravitySystem.add(new GravityObject(gravitySystem, new Vector2(r.nextFloat() * 150 + 5,
-                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(1, 1, 1, 1)));
+                    r.nextFloat() * 90 + 5), r.nextFloat() * 50 + 1, new Color(1, 1, 1, 1), sound));
         }
         System.out.println("post gsystem creation");
-        player = new Player(gravitySystem, new Vector2(80, 50), 35f);
+        player = new Player(gravitySystem, new Vector2(80, 50), 35f, sound);
         System.out.println("post player creation");
         gravitySystem.add(player);
         System.out.println("post player add");

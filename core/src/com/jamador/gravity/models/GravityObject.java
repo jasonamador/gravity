@@ -19,9 +19,11 @@ public class GravityObject {
     /*
     graphics
      */
-    private Sprite arrow;
-    private Array<Sprite> ballSprites;
-    private int spriteIdx = 10;
+    Sprite arrow;
+    Array<Sprite> ballSprites;
+    int spriteIdx = 10;
+    ParticleEffect red;
+    ParticleEffect blue;
     ParticleEffect tail;
     private Color color;
 
@@ -48,16 +50,16 @@ public class GravityObject {
     float[] notes = {55, 65.406f, 82.407f, 97.999f, 123.471f, 146.832f, 174.614f, 220, 261.626f, 329.628f, 391.995f,
             493.883f, 587.33f};
     //, 698.456f, 880, 1046.502f, 1318.51f, 1567.982f, 1975.533f, 2349.318f, 2793.826f, 3520
-    GravityObject(GravitySystem system, Vector2 position, float mass, Color color) {
+    GravityObject(GravitySystem system, Vector2 position, float mass, Color color, Sound s) {
         this.system = system;
         this.color = color;
+        sound = s;
         radius = (float) Math.sqrt(mass / Math.PI);
         bounds = new Circle(position, radius);
 
         /*
         sound
          */
-        sound = Gdx.audio.newSound(Gdx.files.internal("sound.wav"));
         int idx = notes.length - (int)radius - 3;
         if (idx >= notes.length) {
             idx = notes.length - 1;
@@ -90,19 +92,37 @@ public class GravityObject {
         /*
         graphics
          */
-        tail = new ParticleEffect();
-        tail.load(Gdx.files.internal("tail.p"), Gdx.files.internal("particles"));
-        tail.setPosition(position.x, position.y);
-        tail.scaleEffect(radius);
-        tail.getEmitters().peek().getScale().setHigh(radius * 2.5f);
+        red = new ParticleEffect();
+        red.load(Gdx.files.internal("red.p"), Gdx.files.internal("particles"));
+        blue = new ParticleEffect();
+        blue.load(Gdx.files.internal("blue.p"), Gdx.files.internal("particles"));
+        /*
+        red
+         */
+        red.setPosition(position.x, position.y);
+        red.scaleEffect(radius);
+        red.getEmitters().peek().getScale().setHigh(radius * 2.5f);
+        /*
+        blue
+         */
+        blue.setPosition(position.x, position.y);
+        blue.scaleEffect(radius);
+        blue.getEmitters().peek().getScale().setHigh(radius * 2.5f);
+        blue.load(Gdx.files.internal("blue.p"), Gdx.files.internal("particles"));
+        tail = red;
         tail.start();
         arrow = new Sprite(new Texture(Gdx.files.internal("arrow.png")));
         arrow.setSize(radius * 2, radius * 2);
         arrow.setOriginCenter();
-
     }
 
     public void update() {
+        // red or blue
+        if (getMass() > system.getPlayer().getMass()) {
+            tail = red;
+        } else {
+            tail = blue;
+        }
         body.applyForceToCenter(netForce, true);
         bounds.setPosition(body.getPosition());
         tail.setPosition(bounds.x, bounds.y);
@@ -159,6 +179,8 @@ public class GravityObject {
         shrinking = false;
         body.destroyFixture(fixture);
         tail.dispose();
+        red.dispose();
+        blue.dispose();
         /*
         make new getter for this stupid call
          */

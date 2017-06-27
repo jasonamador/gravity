@@ -109,18 +109,18 @@ active: false
 active: false
 - Tint - 
 colorsCount: 9
-colors0: 0.9254902
-colors1: 0.9254902
-colors2: 0.9254902
-colors3: 0.16862746
-colors4: 0.8156863
-colors5: 0.7176471
-colors6: 0.90588236
-colors7: 0.6431373
-colors8: 1.0
+colors0: 0.95686275
+colors1: 0.078431375
+colors2: 0.078431375
+colors3: 0.8156863
+colors4: 0.20784314
+colors5: 0.16862746
+colors6: 1.0
+colors7: 0.003921569
+colors8: 0.5294118
 timelineCount: 3
 timeline0: 0.0
-timeline1: 0.5443886
+timeline1: 0.20976116
 timeline2: 1.0
 - Transparency - 
 lowMin: 0.0
